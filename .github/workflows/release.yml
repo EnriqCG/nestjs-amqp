@@ -16,5 +16,5 @@ jobs:
       run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
     - name: Build, Release and Publish
       run: npm run release
-      env: 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
