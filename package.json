@@ -7,6 +7,7 @@
     "lint": "eslint \"lib/**/*.ts\"",
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "format": "prettier \"lib/**/*.ts\" --write",
+    "prerelease": "npm run build",
     "release": "release-it --dry-run",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
