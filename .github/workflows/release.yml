@@ -1,5 +1,11 @@
-name: Bump version and release to NPM
-on: [ workflow_dispatch ]
+name: Bump version and create release
+on: 
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: 'Next version.. (patch, minor, major)'     
+        required: true
+        default: 'minor'
 
 jobs:
   build:
