@@ -1,5 +1,11 @@
-name: Bump version and release to NPM
-on: [ workflow_dispatch ]
+name: Bump version and create release
+on: 
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: 'Next version.. (patch, minor, major)'     
+        required: true
+        default: 'minor'
 
 jobs:
   build:
@@ -12,9 +18,5 @@ jobs:
       with:
         node-version: '14.x'
     - run: npm ci
-    - name: Set up .npmrc with the publish token
-      run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-    - name: Build, Release and Publish
-      run: npm run release
-      env:
-        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+    - name: Build and release
+      run: npm run release ${{ github.event.inputs.logLevel }}
