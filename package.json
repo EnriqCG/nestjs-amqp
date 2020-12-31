@@ -7,6 +7,7 @@
     "lint": "eslint \"lib/**/*.ts\"",
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "format": "prettier \"lib/**/*.ts\" --write",
+    "release": "release-it --dry-run",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -40,6 +41,7 @@
     "eslint-plugin-prettier": "^3.3.0",
     "prettier": "^2.2.1",
     "reflect-metadata": "^0.1.13",
+    "release-it": "^14.2.2",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
     "typescript": "^4.1.3"
