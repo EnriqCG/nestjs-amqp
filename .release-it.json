@@ -1,10 +1,9 @@
 {
   "git": {
-    "commitMessage": "chore(): release v${version}",
     "requireCleanWorkingDir": false
   },
   "github": {
-    "release": true
+    "release": false
   },
   "npm": {
     "publish": false
