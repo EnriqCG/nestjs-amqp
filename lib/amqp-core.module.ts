@@ -1,6 +1,6 @@
 import { DynamicModule, Global, Module, Inject, OnModuleDestroy } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
-import { AMQPClient } from '../dist/amqp-client.provider'
+import { AMQPClient } from './amqp-client.provider'
 import { createClient } from './amqp-client.provider'
 import { AMQP_CLIENT, AMQP_MODULE_OPTIONS } from './amqp.constants'
 import { AMQPModuleOptions } from './amqp.interface'
