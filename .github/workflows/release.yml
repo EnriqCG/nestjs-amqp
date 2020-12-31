@@ -8,7 +8,7 @@ on:
         default: 'minor'
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,3 +20,5 @@ jobs:
     - run: npm ci
     - name: Build and release
       run: npm run release ${{ github.event.inputs.logLevel }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
