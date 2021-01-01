@@ -23,7 +23,7 @@ AMQP module for NestJS with decorator support.
 
 This project is still a work-in-progress and is being **actively developed**. Issues and PRs are welcome!
 
-**Please check the [v1.0 milestone]((https://github.com/EnriqCG/nestjs-amqp/milestone/1))** for features targeted for the first stable release.
+**Please check the [v1.0 milestone](https://github.com/EnriqCG/nestjs-amqp/milestone/1)** for features targeted for the first stable release.
 
 ***
 
