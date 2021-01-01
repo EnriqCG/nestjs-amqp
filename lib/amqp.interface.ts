@@ -14,6 +14,6 @@ export interface EventMetadata {
 
 interface AMQPExchange {
   name: string
-  type: 'direct' | 'topic' | 'headers' | 'fanout' | 'match'
+  type?: 'direct' | 'topic' | 'headers' | 'fanout' | 'match'
   assert?: boolean
 }
