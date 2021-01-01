@@ -138,6 +138,38 @@ interface AMQPModuleOptions {
    */
   name?: string
   /**
+   * Definition for the AMQP exchange to use
+   * If empty, queues will be bound to the default exchange ('')
+   * 
+   * Default value: {}
+   */
+  exchange?: {
+    /**
+     * Name of the exchange to bind queues to
+     * 
+     * A value is required
+     */
+    name: string
+    /**
+     * Name of the exchange to bind queues to
+     * 
+     * A value is only required if the exchange is asserted
+     */
+    type?: 'direct' | 'topic' | 'headers' | 'fanout' | 'match'
+    /**
+     * Assert the exchange
+     * 
+     * Default value: false
+     */
+    assert?: boolean
+  }
+  /**
+   * Assert queues defined with the @Consume decorator
+   * 
+   * Default value: 'default'
+   */
+  assertQueues?: boolean
+  /**
    * Username used for authenticating against the server
    * 
    * Default value: 'guest'
