@@ -49,9 +49,8 @@ export class AMQPModule implements OnModuleInit {
         for (const handler of handlers) {
           this.logger.log(`Mapped ${handler.callback.name} with event ${handler.eventName}`)
 
-          amqp.assertQueue(handler.eventName)
-          if (options.exchange) {
-            amqp.bindQueue(handler.eventName, options.exchange.name, handler.eventName)
+          if (options.assertQueues === true) {
+            amqp.assertQueue(handler.eventName)
           }
 
           amqp.consume(handler.eventName, async (msg) => {

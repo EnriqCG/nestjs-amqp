@@ -6,6 +6,7 @@ export interface AMQPModuleOptions extends Partial<Options.Connect> {
     name: string
     type: string
   }
+  assertQueues?: boolean
 }
 
 export interface EventMetadata {
