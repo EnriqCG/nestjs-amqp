@@ -7,7 +7,7 @@ export interface AMQPModuleOptions extends Partial<Options.Connect> {
 }
 
 export interface EventMetadata {
-  eventName: string
+  queueName: string
   callback: any
 }
 

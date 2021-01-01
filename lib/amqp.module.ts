@@ -47,10 +47,10 @@ export class AMQPModule implements OnModuleInit {
         const handlers: EventMetadata[] = Reflect.getMetadata(EVENT_METADATA, controller.metatype)
 
         for (const handler of handlers) {
-          this.logger.log(`Mapped ${handler.callback.name} with event ${handler.eventName}`)
+          this.logger.log(`Mapped ${handler.callback.name} with queue ${handler.queueName}`)
 
           if (options.assertQueues === true) {
-            amqp.assertQueue(handler.eventName)
+            amqp.assertQueue(handler.queueName)
           }
 
           /**
@@ -59,9 +59,9 @@ export class AMQPModule implements OnModuleInit {
            * The default exchange is a direct exchange with no name (empty string) pre-declared by the broker
            * https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchange-default
            */
-          amqp.bindQueue(handler.eventName, options?.exchange?.name || '', handler.eventName)
+          amqp.bindQueue(handler.queueName, options?.exchange?.name || '', handler.queueName)
 
-          amqp.consume(handler.eventName, async (msg) => {
+          amqp.consume(handler.queueName, async (msg) => {
             const f = await handler.callback(
               Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
             )
