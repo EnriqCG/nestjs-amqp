@@ -1,7 +1,8 @@
+import { Options } from 'amqplib'
 import { EVENT_METADATA } from '../amqp.constants'
 import { EventMetadata } from '../amqp.interface'
 
-export const Consume = (eventName: string): MethodDecorator => {
+export const Consume = (queueName: string, consumerOptions?: Options.Consume): MethodDecorator => {
   return (target: object, key: string | symbol, descriptor: PropertyDescriptor) => {
     if (!Reflect.hasMetadata(EVENT_METADATA, target.constructor)) {
       Reflect.defineMetadata(EVENT_METADATA, [], target.constructor)
@@ -10,7 +11,8 @@ export const Consume = (eventName: string): MethodDecorator => {
     const listeners: EventMetadata[] = Reflect.getMetadata(EVENT_METADATA, target.constructor)
 
     listeners.push({
-      eventName,
+      queueName,
+      consumerOptions,
       callback: descriptor.value,
     })
 

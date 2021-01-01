@@ -32,7 +32,9 @@ export class AMQPModule implements OnModuleInit {
       options: this.amqpService.getConnectionOptions(),
     }
 
-    if (options.exchange) {
+    // what if exchange.assert = true and !type = true ????
+
+    if (options.exchange && options.exchange.assert && options.exchange.type) {
       amqp.assertExchange(options.exchange.name, options.exchange.type)
     }
 
@@ -47,22 +49,34 @@ export class AMQPModule implements OnModuleInit {
         const handlers: EventMetadata[] = Reflect.getMetadata(EVENT_METADATA, controller.metatype)
 
         for (const handler of handlers) {
-          this.logger.log(`Mapped ${handler.callback.name} with event ${handler.eventName}`)
+          this.logger.log(`Mapped ${handler.callback.name} with queue ${handler.queueName}`)
 
-          amqp.assertQueue(handler.eventName)
-          if (options.exchange) {
-            amqp.bindQueue(handler.eventName, options.exchange.name, handler.eventName)
+          if (options.assertQueues === true) {
+            amqp.assertQueue(handler.queueName)
           }
 
-          amqp.consume(handler.eventName, async (msg) => {
-            const f = await handler.callback(
-              Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
-            )
+          /**
+           * bind queue to defined exchange in options, else bind to default exchange ('')
+           *
+           * The default exchange is a direct exchange with no name (empty string) pre-declared by the broker
+           * https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchange-default
+           */
+          amqp.bindQueue(handler.queueName, options?.exchange?.name || '', handler.queueName)
 
-            if (f !== false && msg) {
-              amqp.ack(msg)
-            }
-          })
+          amqp.consume(
+            handler.queueName,
+            async (msg) => {
+              const f = await handler.callback(
+                Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
+              )
+
+              // if noAck, the broker won’t expect an acknowledgement of messages delivered to this consumer
+              if (!handler.consumerOptions?.noAck && f !== false && msg) {
+                amqp.ack(msg)
+              }
+            },
+            handler.consumerOptions,
+          )
         }
       })
   }
