@@ -53,6 +53,14 @@ export class AMQPModule implements OnModuleInit {
             amqp.assertQueue(handler.eventName)
           }
 
+          /**
+           * bind queue to defined exchange in options, else bind to default exchange ('')
+           *
+           * The default exchange is a direct exchange with no name (empty string) pre-declared by the broker
+           * https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchange-default
+           */
+          amqp.bindQueue(handler.eventName, options?.exchange?.name || '', handler.eventName)
+
           amqp.consume(handler.eventName, async (msg) => {
             const f = await handler.callback(
               Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
