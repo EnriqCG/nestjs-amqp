@@ -32,7 +32,7 @@ export class AMQPModule implements OnModuleInit {
       options: this.amqpService.getConnectionOptions(),
     }
 
-    if (options.exchange) {
+    if (options.exchange && options.exchange.assert) {
       amqp.assertExchange(options.exchange.name, options.exchange.type)
     }
 
