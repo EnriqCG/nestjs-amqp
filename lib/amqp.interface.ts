@@ -8,6 +8,7 @@ export interface AMQPModuleOptions extends Partial<Options.Connect> {
 
 export interface EventMetadata {
   queueName: string
+  consumerOptions?: Options.Consume
   callback: any
 }
 

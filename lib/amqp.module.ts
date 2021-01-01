@@ -61,15 +61,20 @@ export class AMQPModule implements OnModuleInit {
            */
           amqp.bindQueue(handler.queueName, options?.exchange?.name || '', handler.queueName)
 
-          amqp.consume(handler.queueName, async (msg) => {
-            const f = await handler.callback(
-              Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
-            )
+          amqp.consume(
+            handler.queueName,
+            async (msg) => {
+              const f = await handler.callback(
+                Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
+              )
 
-            if (f !== false && msg) {
-              amqp.ack(msg)
-            }
-          })
+              // if noAck, the broker won’t expect an acknowledgement of messages delivered to this consumer
+              if (!handler.consumerOptions?.noAck && f !== false && msg) {
+                amqp.ack(msg)
+              }
+            },
+            handler.consumerOptions,
+          )
         }
       })
   }
