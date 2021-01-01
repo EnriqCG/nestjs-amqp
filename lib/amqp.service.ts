@@ -22,7 +22,7 @@ export class AMQPService {
 
     const channel = this.amqpClient.clients.get(connectionName)
 
-    if(!channel) {
+    if (!channel) {
       throw new Error(`channel ${connectionName} does not exist`)
     }
 
@@ -40,7 +40,7 @@ export class AMQPService {
 
     const channel = this.amqpClient.clientOptions.get(connectionName)
 
-    if(!channel) {
+    if (!channel) {
       throw new Error(`channel ${connectionName} does not exist`)
     }
 
