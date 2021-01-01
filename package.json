@@ -9,8 +9,8 @@
     "format": "prettier \"lib/**/*.ts\" --write",
     "prerelease": "npm run build",
     "release": "release-it",
-    "prepublish": "npm run build",
-    "publish": "npm publish --access public",
+    "prepublish:npm": "npm run build",
+    "publish:npm": "npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
