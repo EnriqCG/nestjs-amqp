@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint \"lib/**/*.ts\"",
-    "build": "rimraf dist && tsc -p tsconfig.build.json && tsc index.ts",
+    "build": "rimraf dist && tsc -p tsconfig.build.json && tsc index.ts -d",
     "format": "prettier \"lib/**/*.ts\" --write",
     "prerelease": "npm run build",
     "release": "release-it",
