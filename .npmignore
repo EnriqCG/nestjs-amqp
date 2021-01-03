@@ -2,9 +2,10 @@
 lib
 index.ts
 package-lock.json
-.eslintrc.js
+.eslintrc
 tsconfig.json
 tsconfig.build.json
 .prettierrc
-.prettierrc
 .commitlintrc.json
+.github
+.gitattributes
