@@ -1,10 +1,9 @@
 import { DynamicModule, Module, OnModuleInit } from '@nestjs/common'
-import { DiscoveryModule, DiscoveryService } from '@nestjs/core'
+import { DiscoveryModule } from '@nestjs/core'
 import { Logger } from '@nestjs/common/services/logger.service'
 
 import { AMQPCoreModule } from './amqp-core.module'
-import { AMQP_QUEUE_CONSUMER } from './amqp.constants'
-import { AMQPModuleOptions, EventMetadata } from './amqp.interface'
+import { AMQPModuleOptions } from './amqp.interface'
 import { AMQPService } from './amqp.service'
 import { AMQPExplorer } from './amqp.explorer'
 import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
@@ -17,7 +16,6 @@ export class AMQPModule implements OnModuleInit {
   private readonly logger = new Logger('AMQPModule', true)
 
   constructor(
-    private readonly discovery: DiscoveryService,
     private readonly amqpService: AMQPService,
     private readonly explorer: AMQPExplorer
   ) {}
@@ -31,61 +29,47 @@ export class AMQPModule implements OnModuleInit {
 
   onModuleInit(): void {
 
-    const consumers = this.explorer.explore()
-
-
-    const { wrappers, amqp, options } = {
-      wrappers: this.discovery.getControllers(),
+    const { consumers, amqp, options } = {
+      consumers: this.explorer.explore(),
       amqp: this.amqpService.getChannel(),
-      options: this.amqpService.getConnectionOptions(),
+      options: this.amqpService.getConnectionOptions()
     }
 
     // what if exchange.assert = true and !type = true ????
-
     if (options.exchange && options.exchange.assert && options.exchange.type) {
       amqp.assertExchange(options.exchange.name, options.exchange.type)
     }
 
-    wrappers
-      .filter(
-        (wrapper) =>
-          wrapper &&
-          !wrapper.isNotMetatype &&
-          Reflect.hasMetadata(AMQP_QUEUE_CONSUMER, wrapper.metatype),
-      )
-      .map((controller) => {
-        const handlers: EventMetadata[] = Reflect.getMetadata(AMQP_QUEUE_CONSUMER, controller.metatype)
+    for (const consumer of consumers) {
 
-        for (const handler of handlers) {
-          this.logger.log(`Mapped ${handler.callback.name} with queue ${handler.queueName}`)
+      
+      this.logger.log(`Mapped function ${consumer.methodName.toString()} with queue ${consumer.queueName}`)
 
-          if (options.assertQueues === true) {
-            amqp.assertQueue(handler.queueName)
+      if (options.assertQueues === true) {
+        amqp.assertQueue(consumer.queueName)
+      }
+
+      /**
+       * bind queue to defined exchange in options, else bind to default exchange ('')
+       *
+       * The default exchange is a direct exchange with no name (empty string) pre-declared by the broker
+       * https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchange-default
+       */
+      amqp.bindQueue(consumer.queueName, options?.exchange?.name || '', consumer.queueName)
+
+      amqp.consume(
+        consumer.queueName,
+        async (msg) => {
+          const f = await consumer.callback(Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content)
+
+          // if noAck, the broker won’t expect an acknowledgement of messages delivered to this consumer
+          if (!consumer?.noAck && f !== false && msg) {
+            amqp.ack(msg)
           }
+        },
+        consumer
+      )
 
-          /**
-           * bind queue to defined exchange in options, else bind to default exchange ('')
-           *
-           * The default exchange is a direct exchange with no name (empty string) pre-declared by the broker
-           * https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchange-default
-           */
-          amqp.bindQueue(handler.queueName, options?.exchange?.name || '', handler.queueName)
-
-          amqp.consume(
-            handler.queueName,
-            async (msg) => {
-              const f = await handler.callback(
-                Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
-              )
-
-              // if noAck, the broker won’t expect an acknowledgement of messages delivered to this consumer
-              if (!handler.consumerOptions?.noAck && f !== false && msg) {
-                amqp.ack(msg)
-              }
-            },
-            handler.consumerOptions,
-          )
-        }
-      })
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Options } from 'amqplib'
+import { Connection, Options } from 'amqplib'
 
 export interface AMQPModuleOptions extends Partial<Options.Connect> {
   name?: string
@@ -12,7 +12,7 @@ export interface EventMetadata {
   callback: any
 }
 
-export interface AMQPMetadataConfiguration {
+export interface AMQPMetadataConfiguration extends Partial<Options.Consume> {
   queueName: string,
   target: any,
   methodName: string | symbol,
