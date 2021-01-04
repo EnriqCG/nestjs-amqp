@@ -1,2 +1,2 @@
-export * from './subscribe-event.decorator'
+export * from './consume.decorator'
 export * from './consumer.decorator'

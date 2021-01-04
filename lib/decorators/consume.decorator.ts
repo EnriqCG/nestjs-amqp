@@ -1,7 +1,6 @@
 import { SetMetadata } from '@nestjs/common'
 import { Options } from 'amqplib'
-import { EVENT_METADATA } from '../amqp.constants'
-import { AMQPMetadataConfiguration } from '../amqp.interface'
+import { AMQP_QUEUE_CONSUMER } from '../amqp.constants'
 
 interface ConsumerOptions extends Partial<Options.Consume> {
   queueName: string
@@ -10,5 +9,5 @@ interface ConsumerOptions extends Partial<Options.Consume> {
 export const Consume = (queueNameOrOptions: string | ConsumerOptions): MethodDecorator => {
   const options = typeof queueNameOrOptions === 'string' ? { queueName: queueNameOrOptions } : queueNameOrOptions
 
-  return SetMetadata(EVENT_METADATA, options)
+  return SetMetadata(AMQP_QUEUE_CONSUMER, options)
 }

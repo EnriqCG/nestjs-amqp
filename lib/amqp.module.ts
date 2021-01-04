@@ -3,7 +3,7 @@ import { DiscoveryModule, DiscoveryService } from '@nestjs/core'
 import { Logger } from '@nestjs/common/services/logger.service'
 
 import { AMQPCoreModule } from './amqp-core.module'
-import { EVENT_METADATA } from './amqp.constants'
+import { AMQP_QUEUE_CONSUMER } from './amqp.constants'
 import { AMQPModuleOptions, EventMetadata } from './amqp.interface'
 import { AMQPService } from './amqp.service'
 import { AMQPExplorer } from './amqp.explorer'
@@ -51,10 +51,10 @@ export class AMQPModule implements OnModuleInit {
         (wrapper) =>
           wrapper &&
           !wrapper.isNotMetatype &&
-          Reflect.hasMetadata(EVENT_METADATA, wrapper.metatype),
+          Reflect.hasMetadata(AMQP_QUEUE_CONSUMER, wrapper.metatype),
       )
       .map((controller) => {
-        const handlers: EventMetadata[] = Reflect.getMetadata(EVENT_METADATA, controller.metatype)
+        const handlers: EventMetadata[] = Reflect.getMetadata(AMQP_QUEUE_CONSUMER, controller.metatype)
 
         for (const handler of handlers) {
           this.logger.log(`Mapped ${handler.callback.name} with queue ${handler.queueName}`)

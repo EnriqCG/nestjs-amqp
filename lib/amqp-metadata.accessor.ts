@@ -1,7 +1,7 @@
 import { Injectable, Type } from "@nestjs/common";
 import { Controller } from "@nestjs/common/interfaces";
 import { Reflector } from "@nestjs/core";
-import { CONSUMER, EVENT_METADATA } from "./amqp.constants";
+import { AMQP_QUEUE_CONSUMER, AMQP_CONTROLLER } from "./amqp.constants";
 import { AMQPMetadataConfiguration, ControllerMetadata } from "./amqp.interface";
 
 @Injectable()
@@ -13,11 +13,11 @@ export class AMQPMetadataAccessor {
     isConsumerComponent(target: Type<any> | Function): boolean {
         if(!target) return false
 
-        return !!this.reflector.get(CONSUMER, target)
+        return !!this.reflector.get(AMQP_CONTROLLER, target)
     }
 
     getConsumerComponentMetadata(target: Type<any> | Function): ControllerMetadata {
-        return this.reflector.get(CONSUMER, target)
+        return this.reflector.get(AMQP_CONTROLLER, target)
     }
 
     getMethodMetadata(
@@ -28,7 +28,7 @@ export class AMQPMetadataAccessor {
     ): AMQPMetadataConfiguration {
         const targetCallback = instancePrototype[methodKey]
 
-        const metadata = Reflect.getMetadata(EVENT_METADATA, targetCallback)
+        const metadata = Reflect.getMetadata(AMQP_QUEUE_CONSUMER, targetCallback)
 
         return {
             ...metadata,
