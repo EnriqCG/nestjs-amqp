@@ -13,9 +13,9 @@ export interface EventMetadata {
 }
 
 export interface AMQPMetadataConfiguration extends Partial<Options.Consume> {
-  queueName: string,
-  target: any,
-  methodName: string | symbol,
+  queueName: string
+  target: any
+  methodName: string | symbol
   callback: any
   prefix: string
 }

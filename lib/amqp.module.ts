@@ -10,15 +10,12 @@ import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
 
 @Module({
   imports: [DiscoveryModule],
-  providers: [AMQPExplorer, AMQPMetadataAccessor]
+  providers: [AMQPExplorer, AMQPMetadataAccessor],
 })
 export class AMQPModule implements OnModuleInit {
   private readonly logger = new Logger('AMQPModule', true)
 
-  constructor(
-    private readonly amqpService: AMQPService,
-    private readonly explorer: AMQPExplorer
-  ) {}
+  constructor(private readonly amqpService: AMQPService, private readonly explorer: AMQPExplorer) {}
 
   static forRoot(options: AMQPModuleOptions | AMQPModuleOptions[]): DynamicModule {
     return {
@@ -28,11 +25,10 @@ export class AMQPModule implements OnModuleInit {
   }
 
   onModuleInit(): void {
-
     const { consumers, amqp, options } = {
       consumers: this.explorer.explore(),
       amqp: this.amqpService.getChannel(),
-      options: this.amqpService.getConnectionOptions()
+      options: this.amqpService.getConnectionOptions(),
     }
 
     // what if exchange.assert = true and !type = true ????
@@ -41,9 +37,9 @@ export class AMQPModule implements OnModuleInit {
     }
 
     for (const consumer of consumers) {
-
-      
-      this.logger.log(`Mapped function ${consumer.methodName.toString()} with queue ${consumer.queueName}`)
+      this.logger.log(
+        `Mapped function ${consumer.methodName.toString()} with queue ${consumer.queueName}`,
+      )
 
       if (options.assertQueues === true) {
         amqp.assertQueue(consumer.queueName)
@@ -60,16 +56,17 @@ export class AMQPModule implements OnModuleInit {
       amqp.consume(
         consumer.queueName,
         async (msg) => {
-          const f = await consumer.callback(Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content)
+          const f = await consumer.callback(
+            Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
+          )
 
           // if noAck, the broker won’t expect an acknowledgement of messages delivered to this consumer
           if (!consumer?.noAck && f !== false && msg) {
             amqp.ack(msg)
           }
         },
-        consumer
+        consumer,
       )
-
     }
   }
 }

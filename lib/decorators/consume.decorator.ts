@@ -8,8 +8,15 @@ interface ConsumerOptions extends Partial<Options.Consume> {
 
 export const Consume = (queueNameOrOptions: string | ConsumerOptions): MethodDecorator => {
   return (target: object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-    const options = typeof queueNameOrOptions === 'string' ? { queueName: queueNameOrOptions } : queueNameOrOptions
+    const options =
+      typeof queueNameOrOptions === 'string'
+        ? { queueName: queueNameOrOptions }
+        : queueNameOrOptions
 
-    SetMetadata(AMQP_QUEUE_CONSUMER, { ...options, methodName: propertyKey })(target, propertyKey, descriptor)
+    SetMetadata(AMQP_QUEUE_CONSUMER, { ...options, methodName: propertyKey })(
+      target,
+      propertyKey,
+      descriptor,
+    )
   }
 }
