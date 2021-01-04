@@ -31,9 +31,10 @@ export class AMQPModule implements OnModuleInit {
       options: this.amqpService.getConnectionOptions(),
     }
 
-    // what if exchange.assert = true and !type = true ????
     if (options.exchange && options.exchange.assert && options.exchange.type) {
       amqp.assertExchange(options.exchange.name, options.exchange.type)
+    } else if (options.exchange && options.exchange.assert && !options.exchange.type) {
+      throw new Error("Can't assert an exchange without specifying the type")
     }
 
     for (const consumer of consumers) {
