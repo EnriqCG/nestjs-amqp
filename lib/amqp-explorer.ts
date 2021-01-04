@@ -1,43 +1,34 @@
 import { Injectable } from '@nestjs/common'
 import { Controller } from '@nestjs/common/interfaces';
-import { MetadataScanner, ModulesContainer } from '@nestjs/core'
+import { DiscoveryService, MetadataScanner } from '@nestjs/core'
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
 import { EVENT_METADATA } from './amqp.constants';
 import { AMQPMetadataConfiguration } from './amqp.interface';
+import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
 
 @Injectable()
-export class AMQPMetadataExplorer {
+export class AMQPExplorer {
 
     constructor(
-        private readonly modulesContainer: ModulesContainer,
-        private readonly metadataScanner: MetadataScanner
+        private readonly metadataScanner: MetadataScanner,
+        private readonly discoveryService: DiscoveryService,
+        private readonly metadataAccessor: AMQPMetadataAccessor
     ) {}
 
-    explore() {
+    explore(): AMQPMetadataConfiguration[] {
 
-        // find all controllers 
+        const controllers: InstanceWrapper[] = this.discoveryService
+            .getControllers()
+            .filter((wrapper: InstanceWrapper) =>
+                this.metadataAccessor.isConsumerComponent(wrapper.metatype)
+            )
 
-        const modules = [...this.modulesContainer.values()]
+        return controllers.map((wrapper: InstanceWrapper) => {
 
-        const controllers = modules
-            .filter(({ controllers }) => controllers.size > 0)
-            .map(({ controllers }) => controllers)
+            const { instance } = wrapper
 
-        const instanceWrappers: InstanceWrapper<Controller>[] = []
-
-        for (const controller of controllers) {
-            const mapKeys = [...controller.keys()]
-            for(const key of mapKeys) {
-                const controlelrInstance = controller.get(key)
-                if(controlelrInstance) {
-                    instanceWrappers.push(controlelrInstance)
-                }
-            }
-        }
-
-        return instanceWrappers.map(( { instance }) => {
-            const instancePrototype = Object.getPrototypeOf(instance);
-
+            const instancePrototype = Object.getPrototypeOf(instance)
+            
             return this.metadataScanner.scanFromPrototype(
                 instance,
                 instancePrototype,
@@ -45,7 +36,7 @@ export class AMQPMetadataExplorer {
             )
         }).reduce((prev, curr) => {
             return prev.concat(curr);
-        })
+        }).filter(handler => handler.queueName)
 
     }
 
@@ -63,4 +54,5 @@ export class AMQPMetadataExplorer {
             callback: targetCallback.bind(instance)
         }
     }
+
 }

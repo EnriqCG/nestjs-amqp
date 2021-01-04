@@ -1,16 +1,17 @@
-import { DynamicModule, Inject, Module, OnModuleInit } from '@nestjs/common'
-import { DiscoveryModule, DiscoveryService, MetadataScanner } from '@nestjs/core'
+import { DynamicModule, Module, OnModuleInit } from '@nestjs/common'
+import { DiscoveryModule, DiscoveryService } from '@nestjs/core'
 import { Logger } from '@nestjs/common/services/logger.service'
 
 import { AMQPCoreModule } from './amqp-core.module'
 import { EVENT_METADATA } from './amqp.constants'
 import { AMQPModuleOptions, EventMetadata } from './amqp.interface'
 import { AMQPService } from './amqp.service'
-import { AMQPMetadataExplorer } from './amqp-explorer'
+import { AMQPExplorer } from './amqp-explorer'
+import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
 
 @Module({
   imports: [DiscoveryModule],
-  providers: [AMQPMetadataExplorer]
+  providers: [AMQPExplorer, AMQPMetadataAccessor]
 })
 export class AMQPModule implements OnModuleInit {
   private readonly logger = new Logger('AMQPModule', true)
@@ -18,7 +19,7 @@ export class AMQPModule implements OnModuleInit {
   constructor(
     private readonly discovery: DiscoveryService,
     private readonly amqpService: AMQPService,
-    private readonly explorer: AMQPMetadataExplorer
+    private readonly explorer: AMQPExplorer
   ) {}
 
   static forRoot(options: AMQPModuleOptions | AMQPModuleOptions[]): DynamicModule {
