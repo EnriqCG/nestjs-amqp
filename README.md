@@ -32,7 +32,7 @@ This module injects a channel from [amqplib](https://github.com/squaremo/amqp.no
 ## Installation
 
 ```bash
-npm install @enriqcg/nestjs-amqp amqplib --save
+npm install @enriqcg/nestjs-amqp amqplib @types/amqplib --save
 ```
 
 ### Getting Started
