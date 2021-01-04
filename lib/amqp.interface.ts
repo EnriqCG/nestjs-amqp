@@ -1,4 +1,4 @@
-import { Connection, Options } from 'amqplib'
+import { Options } from 'amqplib'
 
 export interface AMQPModuleOptions extends Partial<Options.Connect> {
   name?: string
