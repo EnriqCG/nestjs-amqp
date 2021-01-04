@@ -12,8 +12,20 @@ export interface EventMetadata {
   callback: any
 }
 
+export interface AMQPMetadataConfiguration extends Partial<Options.Consume> {
+  queueName: string
+  target: any
+  methodName: string | symbol
+  callback: any
+  prefix: string
+}
+
 interface AMQPExchange {
   name: string
   type?: 'direct' | 'topic' | 'headers' | 'fanout' | 'match'
   assert?: boolean
+}
+
+export interface ControllerMetadata {
+  patternPrefix: string
 }
