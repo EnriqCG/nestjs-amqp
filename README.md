@@ -95,21 +95,43 @@ Check amqplib's reference on [channel.publish()](https://www.squaremobius.net/am
 ```typescript
 import { Consume } from '@enriqcg/nestjs-amqp'
 
+@Consumer('user') // event prefix
 export class ExampleController {
 
-  @Consume('queue_name', {
-    noAck: false, // manual consumer acknowledgments
-  })
-  handleEvent(content: string) {
+  constructor(
+    private readonly exampleService: ExampleService
+  ) { }
+
+  @Consume('created') // handler for user.created
+  handleCreatedEvent(content: string) {
     console.log(JSON.parse(content))
     return false // message will not be acked
     return true //message will be acked
     // no return? -> message will be acked
   }
+
+  // handler for user.updated.address
+  @Consume({
+    queueName: 'updated.address',
+    noAck: false
+  })
+  handleUpdatedAddressEvent(content: string) {
+    const payload = JSON.parse(content)
+
+    try {
+      // pass data to your services
+      this.exampleService.update(payload) 
+    } catch(e) {
+      console.error(e)
+      return false // message will not be acked
+    }
+
+    // message will be automatically acked
+  }
 }
 ```
 
-The message content is **decoded** to a string and provided to decorated methods. Depending on what content you published, further deserialization might be needed.
+The message content is **decoded** to a string and provided to decorated methods. Depending on what content you published, further deserialization might be needed. (Building decorators to help decode JSON payloads is on the TODO).
 
 ### Message Acknowledgment
 
