@@ -12,6 +12,13 @@ export interface EventMetadata {
   callback: any
 }
 
+export interface AMQPMetadataConfiguration {
+  queueName: string,
+  target: any,
+  methodName: string | symbol,
+  callback: any
+}
+
 interface AMQPExchange {
   name: string
   type?: 'direct' | 'topic' | 'headers' | 'fanout' | 'match'
