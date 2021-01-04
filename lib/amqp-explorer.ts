@@ -27,7 +27,6 @@ export class AMQPMetadataExplorer {
 
         for (const controller of controllers) {
             const mapKeys = [...controller.keys()]
-            //console.log(controller.get('AppController'))
             for(const key of mapKeys) {
                 const controlelrInstance = controller.get(key)
                 if(controlelrInstance) {
@@ -48,7 +47,6 @@ export class AMQPMetadataExplorer {
             return prev.concat(curr);
         })
 
-        //console.log(controllers)
     }
 
     exploreMethodMetadata(
@@ -58,6 +56,11 @@ export class AMQPMetadataExplorer {
     ): AMQPMetadataConfiguration {
         const targetCallback = instancePrototype[methodKey]
 
-        return Reflect.getMetadata(EVENT_METADATA, targetCallback)
+        const metadata = Reflect.getMetadata(EVENT_METADATA, targetCallback)
+
+        return {
+            ...metadata,
+            callback: targetCallback.bind(instance)
+        }
     }
 }
