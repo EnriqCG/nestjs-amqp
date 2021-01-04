@@ -1,8 +1,16 @@
 import { SetMetadata } from "@nestjs/common"
 import { CONSUMER, } from "../amqp.constants"
 
-export const Consumer = (): ClassDecorator => {
+export const Consumer = (patternPrefix?: string): ClassDecorator => {
     return (target: Function) => {
-        SetMetadata(CONSUMER, true)(target)
+        if(!patternPrefix) {
+            patternPrefix = ''
+        }
+
+        const consumerMetadata = {
+            patternPrefix 
+        }
+
+        SetMetadata(CONSUMER, consumerMetadata)(target)
     }
 }

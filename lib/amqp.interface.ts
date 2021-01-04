@@ -17,10 +17,15 @@ export interface AMQPMetadataConfiguration {
   target: any,
   methodName: string | symbol,
   callback: any
+  prefix: string
 }
 
 interface AMQPExchange {
   name: string
   type?: 'direct' | 'topic' | 'headers' | 'fanout' | 'match'
   assert?: boolean
+}
+
+export interface ControllerMetadata {
+  patternPrefix: string
 }

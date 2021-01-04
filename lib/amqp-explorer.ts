@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { Controller } from '@nestjs/common/interfaces';
 import { DiscoveryService, MetadataScanner } from '@nestjs/core'
-import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
-import { EVENT_METADATA } from './amqp.constants';
-import { AMQPMetadataConfiguration } from './amqp.interface';
+import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper'
+import { AMQPMetadataConfiguration } from './amqp.interface'
 import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
 
 @Injectable()
@@ -25,34 +23,20 @@ export class AMQPExplorer {
 
         return controllers.map((wrapper: InstanceWrapper) => {
 
-            const { instance } = wrapper
+            const { instance, metatype } = wrapper
 
-            const instancePrototype = Object.getPrototypeOf(instance)
-            
+            const { instancePrototype, controllerMetadata } = {
+                instancePrototype: Object.getPrototypeOf(instance),
+                controllerMetadata: this.metadataAccessor.getConsumerComponentMetadata(metatype)
+            }
+
             return this.metadataScanner.scanFromPrototype(
                 instance,
                 instancePrototype,
-                method => this.exploreMethodMetadata(instance, instancePrototype, method)
+                method => this.metadataAccessor.getMethodMetadata(instance, instancePrototype, method, controllerMetadata)
             )
         }).reduce((prev, curr) => {
             return prev.concat(curr);
         }).filter(handler => handler.queueName)
-
     }
-
-    exploreMethodMetadata(
-        instance: object,
-        instancePrototype: Controller,
-        methodKey: string,
-    ): AMQPMetadataConfiguration {
-        const targetCallback = instancePrototype[methodKey]
-
-        const metadata = Reflect.getMetadata(EVENT_METADATA, targetCallback)
-
-        return {
-            ...metadata,
-            callback: targetCallback.bind(instance)
-        }
-    }
-
 }
