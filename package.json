@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "eslint \"lib/**/*.ts\"",
     "build": "rimraf dist && tsc -p tsconfig.build.json && tsc index.ts -d",
+    "build:dev": "tsc index.ts -d && tsc -w -p tsconfig.build.json",
     "format": "prettier \"lib/**/*.ts\" --write",
     "prerelease": "npm run build",
     "release": "release-it",
