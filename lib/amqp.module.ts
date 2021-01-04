@@ -6,7 +6,7 @@ import { AMQPCoreModule } from './amqp-core.module'
 import { EVENT_METADATA } from './amqp.constants'
 import { AMQPModuleOptions, EventMetadata } from './amqp.interface'
 import { AMQPService } from './amqp.service'
-import { AMQPExplorer } from './amqp-explorer'
+import { AMQPExplorer } from './amqp.explorer'
 import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
 
 @Module({
