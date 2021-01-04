@@ -21,10 +21,14 @@ export class AMQPExplorer {
                 this.metadataAccessor.isConsumerComponent(wrapper.metatype)
             )
 
+        if(!controllers) {
+            return []
+        }
+
         return controllers.map((wrapper: InstanceWrapper) => {
 
             const { instance, metatype } = wrapper
-
+            
             const { instancePrototype, controllerMetadata } = {
                 instancePrototype: Object.getPrototypeOf(instance),
                 controllerMetadata: this.metadataAccessor.getConsumerComponentMetadata(metatype)
