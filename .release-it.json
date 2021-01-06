@@ -1,9 +1,12 @@
 {
   "git": {
-    "requireCleanWorkingDir": true
+    "requireCleanWorkingDir": false,
+    "commit": true,
+    "tag": true,
+    "push": true
   },
   "github": {
-    "release": true
+    "release": false
   },
   "npm": {
     "publish": false

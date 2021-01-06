@@ -25,7 +25,7 @@ This project is still a work-in-progress and is being **actively developed**. Is
 
 **Please check the [v1.0 milestone](https://github.com/EnriqCG/nestjs-amqp/milestone/1)** for features targeted for the first stable release.
 
-***
+---
 
 This module injects a channel from [amqplib](https://github.com/squaremo/amqp.node). Please check the [Channel](https://www.squaremobius.net/amqp.node/channel_api.html) documentation for extra insight on how to publish messages.
 
@@ -53,8 +53,8 @@ import { AMQPModule } from '@enriqcg/nestjs-amqp'
       exchange: {
         name: 'my_exchange',
         // exchange will not be asserted (if-need-be)
-        assert: false
-      }
+        assert: false,
+      },
     }),
   ],
 })
@@ -75,9 +75,7 @@ import { AMQPService } from '@enriqcg/nestjs-amqp'
 
 @Injectable()
 export class ExampleService {
-  constructor(
-    private readonly amqpService: AMQPService,
-  ) {}
+  constructor(private readonly amqpService: AMQPService) {}
 
   async sendEvent() {
     const amqp = this.amqpService.getChannel()
@@ -98,10 +96,7 @@ import { Consume } from '@enriqcg/nestjs-amqp'
 
 @Consumer('user') // event prefix
 export class ExampleController {
-
-  constructor(
-    private readonly exampleService: ExampleService
-  ) { }
+  constructor(private readonly exampleService: ExampleService) {}
 
   @Consume('created') // handler for user.created
   handleCreatedEvent(content: string) {
@@ -114,15 +109,15 @@ export class ExampleController {
   // handler for user.updated.address
   @Consume({
     queueName: 'updated.address',
-    noAck: false
+    noAck: false,
   })
   handleUpdatedAddressEvent(content: string) {
     const payload = JSON.parse(content)
 
     try {
       // pass data to your services
-      this.exampleService.update(payload) 
-    } catch(e) {
+      this.exampleService.update(payload)
+    } catch (e) {
       console.error(e)
       return false // message will not be acked
     }
@@ -144,76 +139,76 @@ If automatic acknowledgment is disabled for a queue (`noAck = true`), to ack a m
 interface AMQPModuleOptions {
   /**
    * The host URL for the connection
-   * 
+   *
    * Default value: 'localhost'
    */
   hostname?: string
   /**
    * The port of the AMQP host
-   * 
+   *
    * Default value: 5672
    */
   port?: number
   /**
    * The name of the connection. Only really relevant in multiple
    * connection contexts
-   * 
+   *
    * Default value: 'default'
    */
   name?: string
   /**
    * Definition for the AMQP exchange to use
    * If empty, queues will be bound to the default exchange ('')
-   * 
+   *
    * Default value: {}
    */
   exchange?: {
     /**
      * Name of the exchange to bind queues to
-     * 
+     *
      * A value is required
      */
     name: string
     /**
      * Name of the exchange to bind queues to
-     * 
+     *
      * A value is only required if the exchange is asserted
      */
     type?: 'direct' | 'topic' | 'headers' | 'fanout' | 'match'
     /**
      * Assert the exchange
-     * 
+     *
      * Default value: false
      */
     assert?: boolean
   }
   /**
    * Assert queues defined with the @Consume decorator
-   * 
+   *
    * Default value: 'default'
    */
   assertQueues?: boolean
   /**
    * Username used for authenticating against the server
-   * 
+   *
    * Default value: 'guest'
    */
   username?: string
   /**
    * Password used for authenticating against the server
-   * 
+   *
    * Default value: 'guest'
    */
   password?: string
   /**
    * The period of the connection heartbeat in seconds
-   * 
+   *
    * Default value: 0
    */
   heartbeat?: number
   /**
    * What VHost shall be used
-   * 
+   *
    * Default value: '/'
    */
   vhost?: string
