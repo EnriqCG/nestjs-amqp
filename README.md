@@ -2,6 +2,9 @@
 
 <p align="center">
 
+  <a href="https://github.com/EnriqCG/nestjs-amqp/milestones">
+    <img alt="Project Status: Active" src="https://img.shields.io/badge/Project%20Status-active-brightgreen">
+  </a>
   <a href="https://github.com/EnriqCG/nestjs-amqplib/LICENSE.md">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg">
   </a>
@@ -11,10 +14,10 @@
   <a href="https://github.com/EnriqCG/nestjs-amqp/releases">
     <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/enriqcg/nestjs-amqp">
   </a>
-
-  <a href="https://github.com/EnriqCG/nestjs-amqp/tags">
-    <img alt="GitHub tag (latest by date)" src="https://img.shields.io/github/v/tag/enriqcg/nestjs-amqp">
+  <a href="https://github.com/EnriqCG/nestjs-amqp/milestone/1">
+    <img alt="Milestone Progress" src="https://img.shields.io/github/milestones/progress/EnriqCG/nestjs-amqp/1">
   </a>
+
 </p>
 
 AMQP module for NestJS with decorator support.
