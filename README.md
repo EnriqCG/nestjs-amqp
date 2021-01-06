@@ -62,7 +62,8 @@ export class AppModule {}
 ```
 
 ### [AMQPModule options reference](#connection-options)
-Also check documentation [here]() on amqplib's Exchange and Queue **assertion**.
+
+You can also check documentation on amqplib's [Exchange](https://www.squaremobius.net/amqp.node/channel_api.html#channel_assertExchange) and [Queue](https://www.squaremobius.net/amqp.node/channel_api.html#channel_assertQueue) **assertion**.
 
 ## Publisher
 
