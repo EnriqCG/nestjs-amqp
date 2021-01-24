@@ -160,6 +160,12 @@ interface AMQPModuleOptions {
    */
   name?: string
   /**
+   * Applies the provided string as a suffix to asserted queues
+   *
+   * Default value: ''
+   */
+  serviceName?: string
+  /**
    * Definition for the AMQP exchange to use
    * If empty, queues will be bound to the default exchange ('')
    *
