@@ -7,7 +7,7 @@ import { AMQPModuleOptions } from './amqp.interface'
 import { AMQPService } from './amqp.service'
 import { AMQPExplorer } from './amqp.explorer'
 import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
-import { isFunction } from '@nestjs/common/utils/shared.utils';
+import { isFunction } from '@nestjs/common/utils/shared.utils'
 
 @Module({
   imports: [DiscoveryModule],
@@ -44,7 +44,7 @@ export class AMQPModule implements OnModuleInit {
       )
 
       let serviceName = ''
-      if(options.serviceName) {
+      if (options.serviceName) {
         serviceName = `-${options.serviceName}`
       }
 
@@ -58,17 +58,23 @@ export class AMQPModule implements OnModuleInit {
        * The default exchange is a direct exchange with no name (empty string) pre-declared by the broker
        * https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchange-default
        */
-      amqp.bindQueue(`${consumer.queueName}${serviceName}`, options?.exchange?.name || '', `${consumer.queueName}`)
+      amqp.bindQueue(
+        `${consumer.queueName}${serviceName}`,
+        options?.exchange?.name || '',
+        `${consumer.queueName}`,
+      )
 
       amqp.consume(
         `${consumer.queueName}${serviceName}`,
         async (msg) => {
-          const f = this.transformToResult(await consumer.callback(
-            Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
-          ))
+          const f = this.transformToResult(
+            await consumer.callback(
+              Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
+            ),
+          )
 
           // if noAck, the broker won’t expect an acknowledgement of messages delivered to this consumer
-          if (!consumer?.noAck && await f !== false && msg) {
+          if (!consumer?.noAck && (await f) !== false && msg) {
             amqp.ack(msg)
           }
         },
@@ -78,7 +84,7 @@ export class AMQPModule implements OnModuleInit {
   }
 
   private async transformToResult(resultOrDeferred: any) {
-    if(resultOrDeferred && isFunction(resultOrDeferred.subscribe)) {
+    if (resultOrDeferred && isFunction(resultOrDeferred.subscribe)) {
       return resultOrDeferred.toPromise()
     }
     return resultOrDeferred
