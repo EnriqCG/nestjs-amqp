@@ -7,6 +7,7 @@ import { AMQPModuleOptions } from './amqp.interface'
 import { AMQPService } from './amqp.service'
 import { AMQPExplorer } from './amqp.explorer'
 import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
+import { isFunction } from '@nestjs/common/utils/shared.utils';
 
 @Module({
   imports: [DiscoveryModule],
@@ -62,17 +63,24 @@ export class AMQPModule implements OnModuleInit {
       amqp.consume(
         `${consumer.queueName}${serviceName}`,
         async (msg) => {
-          const f = await consumer.callback(
+          const f = this.transformToResult(await consumer.callback(
             Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
-          )
+          ))
 
           // if noAck, the broker won’t expect an acknowledgement of messages delivered to this consumer
-          if (!consumer?.noAck && f !== false && msg) {
+          if (!consumer?.noAck && await f !== false && msg) {
             amqp.ack(msg)
           }
         },
         consumer,
       )
     }
+  }
+
+  private async transformToResult(resultOrDeferred: any) {
+    if(resultOrDeferred && isFunction(resultOrDeferred.subscribe)) {
+      return resultOrDeferred.toPromise()
+    }
+    return resultOrDeferred
   }
 }
