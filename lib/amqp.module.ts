@@ -42,8 +42,13 @@ export class AMQPModule implements OnModuleInit {
         `Mapped function ${consumer.methodName.toString()} with queue ${consumer.queueName}`,
       )
 
+      let serviceName = ''
+      if(options.serviceName) {
+        serviceName = `-${options.serviceName}`
+      }
+
       if (options.assertQueues === true) {
-        amqp.assertQueue(consumer.queueName)
+        amqp.assertQueue(`${consumer.queueName}${serviceName}`)
       }
 
       /**
@@ -52,10 +57,10 @@ export class AMQPModule implements OnModuleInit {
        * The default exchange is a direct exchange with no name (empty string) pre-declared by the broker
        * https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchange-default
        */
-      amqp.bindQueue(consumer.queueName, options?.exchange?.name || '', consumer.queueName)
+      amqp.bindQueue(`${consumer.queueName}${serviceName}`, options?.exchange?.name || '', `${consumer.queueName}`)
 
       amqp.consume(
-        consumer.queueName,
+        `${consumer.queueName}${serviceName}`,
         async (msg) => {
           const f = await consumer.callback(
             Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,

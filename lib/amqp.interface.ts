@@ -4,6 +4,7 @@ export interface AMQPModuleOptions extends Partial<Options.Connect> {
   name?: string
   assertQueues?: boolean
   exchange?: AMQPExchange
+  serviceName?: string
 }
 
 export interface EventMetadata {
