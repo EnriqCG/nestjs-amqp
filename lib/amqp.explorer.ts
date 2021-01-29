@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { DiscoveryService, MetadataScanner } from '@nestjs/core'
+import { MetadataScanner } from '@nestjs/core/metadata-scanner'
+import { DiscoveryService } from '@nestjs/core'
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper'
 import { AMQPMetadataConfiguration } from './amqp.interface'
 import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
