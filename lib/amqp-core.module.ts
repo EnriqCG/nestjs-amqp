@@ -27,14 +27,16 @@ export class AMQPCoreModule implements OnModuleDestroy {
   }
 
   onModuleDestroy(): void {
-    const closeConnection = ({ clients, defaultKey }) => (options) => {
-      const connectionName = options.name || defaultKey
-      const client = clients.get(connectionName)
+    const closeConnection =
+      ({ clients, defaultKey }) =>
+      (options) => {
+        const connectionName = options.name || defaultKey
+        const client = clients.get(connectionName)
 
-      if (client) {
-        client.close()
+        if (client) {
+          client.close()
+        }
       }
-    }
 
     const amqpClient = this.moduleRef.get<AMQPClient>(AMQP_CLIENT)
     const closeClientConnection = closeConnection(amqpClient)
