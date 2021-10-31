@@ -32,55 +32,57 @@ export class AMQPModule implements OnModuleInit {
       options: this.amqpService.getConnectionOptions(),
     }
 
-    if (options.exchange && options.exchange.assert && options.exchange.type) {
-      amqp.assertExchange(options.exchange.name, options.exchange.type)
-    } else if (options.exchange && options.exchange.assert && !options.exchange.type) {
-      throw new Error("Can't assert an exchange without specifying the type")
-    }
-
-    for (const consumer of consumers) {
-      this.logger.log(
-        `Mapped function ${consumer.methodName.toString()} with queue ${consumer.queueName}`,
-      )
-
-      let serviceName = ''
-      if (options.serviceName) {
-        serviceName = `-${options.serviceName}`
+    amqp.addSetup((channel) => {
+      if (options.exchange && options.exchange.assert && options.exchange.type) {
+        amqp.assertExchange(options.exchange.name, options.exchange.type)
+      } else if (options.exchange && options.exchange.assert && !options.exchange.type) {
+        throw new Error("Can't assert an exchange without specifying the type")
       }
 
-      if (options.assertQueues === true) {
-        amqp.assertQueue(`${consumer.queueName}${serviceName}`)
+      for (const consumer of consumers) {
+        this.logger.log(
+          `Mapped function ${consumer.methodName.toString()} with queue ${consumer.queueName}`,
+        )
+
+        let serviceName = ''
+        if (options.serviceName) {
+          serviceName = `-${options.serviceName}`
+        }
+
+        if (options.assertQueues === true) {
+          amqp.assertQueue(`${consumer.queueName}${serviceName}`)
+        }
+
+        /**
+         * bind queue to defined exchange in options, else bind to default exchange ('')
+         *
+         * The default exchange is a direct exchange with no name (empty string) pre-declared by the broker
+         * https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchange-default
+         */
+        amqp.bindQueue(
+          `${consumer.queueName}${serviceName}`,
+          options?.exchange?.name || '',
+          `${consumer.queueName}`,
+        )
+
+        amqp.consume(
+          `${consumer.queueName}${serviceName}`,
+          async (msg) => {
+            const f = this.transformToResult(
+              await consumer.callback(
+                Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
+              ),
+            )
+
+            // if noAck, the broker won’t expect an acknowledgement of messages delivered to this consumer
+            if (!consumer?.noAck && (await f) !== false && msg) {
+              amqp.ack(msg)
+            }
+          },
+          consumer,
+        )
       }
-
-      /**
-       * bind queue to defined exchange in options, else bind to default exchange ('')
-       *
-       * The default exchange is a direct exchange with no name (empty string) pre-declared by the broker
-       * https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchange-default
-       */
-      amqp.bindQueue(
-        `${consumer.queueName}${serviceName}`,
-        options?.exchange?.name || '',
-        `${consumer.queueName}`,
-      )
-
-      amqp.consume(
-        `${consumer.queueName}${serviceName}`,
-        async (msg) => {
-          const f = this.transformToResult(
-            await consumer.callback(
-              Buffer.isBuffer(msg?.content) ? msg?.content.toString() : msg?.content,
-            ),
-          )
-
-          // if noAck, the broker won’t expect an acknowledgement of messages delivered to this consumer
-          if (!consumer?.noAck && (await f) !== false && msg) {
-            amqp.ack(msg)
-          }
-        },
-        consumer,
-      )
-    }
+    })
   }
 
   private async transformToResult(resultOrDeferred: any) {

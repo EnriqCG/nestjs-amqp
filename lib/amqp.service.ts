@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common'
 import { AMQP_CLIENT } from './amqp.constants'
-import { Channel } from 'amqplib'
+import { ChannelWrapper } from 'amqp-connection-manager'
 import { AMQPClient } from './amqp-client.provider'
 import { AMQPModuleOptions } from './amqp.interface'
 
@@ -11,7 +11,7 @@ export class AMQPService {
     private readonly amqpClient: AMQPClient,
   ) {}
 
-  getChannel(connectionName?: string): Channel {
+  getChannel(connectionName?: string): ChannelWrapper {
     if (!connectionName) {
       connectionName = this.amqpClient.defaultKey
     }
