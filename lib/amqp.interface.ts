@@ -30,3 +30,5 @@ interface AMQPExchange {
 export interface ControllerMetadata {
   patternPrefix: string
 }
+
+/* TODO: Create interface for including connection and channel */

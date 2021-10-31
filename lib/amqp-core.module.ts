@@ -35,6 +35,7 @@ export class AMQPCoreModule implements OnModuleDestroy {
 
         if (client) {
           client.close()
+          console.log('connectionName', connectionName, 'client', client)
         }
       }
 
