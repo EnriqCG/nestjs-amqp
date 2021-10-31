@@ -1,12 +1,12 @@
 import { Logger, Provider } from '@nestjs/common'
-import * as amqp from 'amqp-connection-manager'
+import amqpConnectionManager from 'amqp-connection-manager'
 
 import { AMQP_CLIENT, AMQP_MODULE_OPTIONS } from './amqp.constants'
-import { AMQPModuleOptions } from './amqp.interface'
+import { AMQPModuleOptions, ClientTuple } from './amqp.interface'
 
 export interface AMQPClient {
   defaultKey: string
-  clients: Map<string, amqp.ChannelWrapper>
+  clients: Map<string, ClientTuple>
   clientOptions: Map<string, AMQPModuleOptions>
   size: number
 }
@@ -16,7 +16,7 @@ export const createClient = (): Provider => ({
   useFactory: async (options: AMQPModuleOptions): Promise<AMQPClient> => {
     const logger = new Logger('AMQPModule', true)
 
-    const clients = new Map<string, amqp.ChannelWrapper>()
+    const clients = new Map<string, ClientTuple>()
     const clientOptions = new Map<string, AMQPModuleOptions>()
 
     let defaultKey = 'default'
@@ -25,7 +25,7 @@ export const createClient = (): Provider => ({
       defaultKey = options.name
     }
 
-    const connection = amqp.connect(options)
+    const connection = amqpConnectionManager.connect(options)
 
     connection.on('connect', ({ connection, url }) => {
       logger.log(`Connected to RabbitMQ broker: ${url.hostname}`)
@@ -35,7 +35,12 @@ export const createClient = (): Provider => ({
       logger.error(`Lost connection to RabbitMQ broker.\n${err.stack}`)
     })
 
-    clients.set(defaultKey, connection.createChannel())
+    const channel = connection.createChannel()
+
+    clients.set(defaultKey, {
+      channel,
+      connection,
+    })
     clientOptions.set(defaultKey, options)
 
     return {

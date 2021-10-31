@@ -8,6 +8,7 @@ import { AMQPService } from './amqp.service'
 import { AMQPExplorer } from './amqp.explorer'
 import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
 import { isFunction } from '@nestjs/common/utils/shared.utils'
+import { Channel } from 'amqplib'
 
 @Module({
   imports: [DiscoveryModule],
@@ -32,7 +33,7 @@ export class AMQPModule implements OnModuleInit {
       options: this.amqpService.getConnectionOptions(),
     }
 
-    amqp.addSetup((channel) => {
+    amqp.addSetup((channel: Channel) => {
       if (options.exchange && options.exchange.assert && options.exchange.type) {
         amqp.assertExchange(options.exchange.name, options.exchange.type)
       } else if (options.exchange && options.exchange.assert && !options.exchange.type) {
