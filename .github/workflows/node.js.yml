@@ -23,10 +23,10 @@ jobs:
 
     services:
       rabbitmq:
-      image: rabbitmq:3-management
-      ports:
-        - '5672:5672'
-        - '8082:15672'
+        image: rabbitmq:3-management
+        ports:
+          - '5672:5672'
+          - '8082:15672'
 
     steps:
       - name: Run Integration Tests
