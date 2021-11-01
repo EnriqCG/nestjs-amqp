@@ -26,7 +26,7 @@ export class AMQPModule implements OnModuleInit {
     }
   }
 
-  async onModuleInit() {
+  async onModuleInit(): Promise<void> {
     const { consumers, amqp, options } = {
       consumers: this.explorer.explore(),
       amqp: this.amqpService.getChannel(),
