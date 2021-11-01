@@ -1,4 +1,11 @@
-import { DynamicModule, Global, Module, Inject, OnApplicationShutdown } from '@nestjs/common'
+import {
+  DynamicModule,
+  Global,
+  Module,
+  Inject,
+  OnApplicationShutdown,
+  Logger,
+} from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
 import { AMQPClient } from './amqp-client.provider'
 import { createClient } from './amqp-client.provider'
@@ -27,13 +34,16 @@ export class AMQPCoreModule implements OnApplicationShutdown {
   }
 
   onApplicationShutdown(): void {
+    const logger = new Logger('AMQPModule', true)
+
     const closeConnection =
       ({ clients, defaultKey }) =>
       (options) => {
         const connectionName = options.name || defaultKey
         const client: ClientTuple = clients.get(connectionName)
 
-        if (client.connection && client.connection.isConnected()) {
+        if (client.connection) {
+          logger.log('Disconnected from RabbitMQ broker')
           client.connection.close()
         }
       }

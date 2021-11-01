@@ -1,5 +1,4 @@
-import { ChannelWrapper } from 'amqp-connection-manager'
-import { IAmqpConnectionManager } from 'amqp-connection-manager/dist/esm/AmqpConnectionManager'
+import { ChannelWrapper, AmqpConnectionManager } from 'amqp-connection-manager'
 import { Options } from 'amqplib'
 
 export interface AMQPModuleOptions extends Partial<Options.Connect> {
@@ -34,6 +33,6 @@ export interface ControllerMetadata {
 }
 
 export interface ClientTuple {
-  connection: IAmqpConnectionManager
+  connection: AmqpConnectionManager
   channel: ChannelWrapper
 }

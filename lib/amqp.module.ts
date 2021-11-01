@@ -26,16 +26,16 @@ export class AMQPModule implements OnModuleInit {
     }
   }
 
-  onModuleInit() {
+  async onModuleInit() {
     const { consumers, amqp, options } = {
       consumers: this.explorer.explore(),
       amqp: this.amqpService.getChannel(),
       options: this.amqpService.getConnectionOptions(),
     }
 
-    amqp.addSetup((channel: Channel) => {
+    await amqp.addSetup(async (channel: Channel) => {
       if (options.exchange && options.exchange.assert && options.exchange.type) {
-        amqp.assertExchange(options.exchange.name, options.exchange.type)
+        await channel.assertExchange(options.exchange.name, options.exchange.type)
       } else if (options.exchange && options.exchange.assert && !options.exchange.type) {
         throw new Error("Can't assert an exchange without specifying the type")
       }
@@ -51,7 +51,7 @@ export class AMQPModule implements OnModuleInit {
         }
 
         if (options.assertQueues === true) {
-          amqp.assertQueue(`${consumer.queueName}${serviceName}`)
+          await channel.assertQueue(`${consumer.queueName}${serviceName}`)
         }
 
         /**
@@ -60,13 +60,13 @@ export class AMQPModule implements OnModuleInit {
          * The default exchange is a direct exchange with no name (empty string) pre-declared by the broker
          * https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchange-default
          */
-        amqp.bindQueue(
+        await channel.bindQueue(
           `${consumer.queueName}${serviceName}`,
           options?.exchange?.name || '',
           `${consumer.queueName}`,
         )
 
-        amqp.consume(
+        await channel.consume(
           `${consumer.queueName}${serviceName}`,
           async (msg) => {
             const f = this.transformToResult(
@@ -77,7 +77,7 @@ export class AMQPModule implements OnModuleInit {
 
             // if noAck, the broker won’t expect an acknowledgement of messages delivered to this consumer
             if (!consumer?.noAck && (await f) !== false && msg) {
-              amqp.ack(msg)
+              channel.ack(msg)
             }
           },
           consumer,

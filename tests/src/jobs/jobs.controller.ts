@@ -13,7 +13,7 @@ export class JobsController {
    */
   static IS_NOTIFIED = false
 
-  @Consume('test_queue')
+  @Consume('notify_queue')
   testEventHandler(data: any) {
     JobsController.IS_NOTIFIED = data
   }

@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint \"lib/**/*.ts\"",
     "build": "rimraf dist && tsc -p tsconfig.build.json && tsc index.ts -d",
-    "build:dev": "tsc index.ts -d && tsc -w -p tsconfig.build.json",
+    "build:dev": "tsc -w -p tsconfig.build.json && tsc index.ts -d",
     "format:check": "prettier \"lib/**/*.ts\" \"./*.ts\" --check",
     "format": "prettier \"lib/**/*.ts\" \"./*.ts\" --write",
     "prerelease": "npm run build",
@@ -58,14 +58,13 @@
     "release-it": "^14.6.2",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.7",
-    "supertest": "^6.1.6",
     "ts-jest": "^27.0.7",
     "typescript": "^4.2.4"
   },
   "peerDependencies": {
     "@nestjs/common": "^6.10.11 || ^7.0.0",
     "@nestjs/core": "^6.10.11 || ^7.0.0",
-    "amqp-connection-manager": "^3.7.0",
-    "@types/amqplib": "^0.5.17"
+    "@types/amqplib": "^0.5.17",
+    "amqp-connection-manager": "^3.7.0"
   }
 }

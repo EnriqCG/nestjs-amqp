@@ -28,7 +28,7 @@ export const createClient = (): Provider => ({
     const connection = amqpConnectionManager.connect(options)
 
     connection.on('connect', ({ connection, url }) => {
-      logger.log(`Connected to RabbitMQ broker: ${url.hostname}`)
+      logger.log(`Connected to RabbitMQ broker.`)
     })
 
     connection.on('disconnect', ({ err }) => {

@@ -5,15 +5,9 @@ import { AMQPService } from '../../../lib'
 export class JobsService {
   constructor(private amqpService: AMQPService) {}
 
-  async publishMessage(message): Promise<boolean> {
-    try {
-      const ch = this.amqpService.getChannel()
+  async publishMessage(exchange: string, routingKey: string, message: string): Promise<boolean> {
+    const ch = this.amqpService.getChannel()
 
-      return ch.publish('test_exchange', 'test_queue', Buffer.from(message))
-    } catch (e) {
-      // TODO: Catch exceptions and test them with Jest
-      console.log('e', e)
-      return false
-    }
+    return ch.publish(exchange, routingKey, Buffer.from(message))
   }
 }
