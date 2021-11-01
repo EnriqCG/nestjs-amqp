@@ -2,7 +2,6 @@ name: Run formatting check
 
 on:
   push:
-  pull_request:
 
 jobs:
   build:
