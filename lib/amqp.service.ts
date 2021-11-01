@@ -12,9 +12,6 @@ export class AMQPService {
     private readonly amqpClient: AMQPClient,
   ) {}
 
-  // TODO: Get tuple in other function and getChannel and getConnection
-  // are just getters from the tuple.
-
   getChannel(connectionName?: string): ChannelWrapper {
     if (!connectionName) {
       connectionName = this.amqpClient.defaultKey
