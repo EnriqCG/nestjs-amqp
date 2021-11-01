@@ -2,9 +2,7 @@ name: Run formatting check
 
 on:
   push:
-    branches: [main]
   pull_request:
-    branches: [main]
 
 jobs:
   build:
@@ -19,4 +17,17 @@ jobs:
       - run: npm ci
       - run: npm run format:check
       - run: npm run lint
-    #- run: npm test This project does not have tests yet
+
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      rabbitmq:
+      image: rabbitmq:3-management
+      ports:
+        - '5672:5672'
+        - '8082:15672'
+
+    steps:
+      - name: Run Integration Tests
+        run: npm run test:e2e
