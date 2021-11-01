@@ -36,8 +36,6 @@ describe('@enriqcg/nestjs-amqp', () => {
     jobsService = app.get<JobsService>(JobsService)
     jobsController = app.get<JobsController>(JobsController)
 
-    jest.spyOn(jobsController, 'testEventHandler')
-
     await app.init()
   })
 
@@ -54,8 +52,4 @@ describe('@enriqcg/nestjs-amqp', () => {
   afterEach(async () => {
     await app.close()
   })
-
-  /* test('message is available on the RabbitMQ broker', () => {
-    expect(jobsService.publishMessage('test')).toBe(true)
-  }) */
 })
