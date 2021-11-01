@@ -6,14 +6,15 @@
   "scripts": {
     "lint": "eslint \"lib/**/*.ts\"",
     "build": "rimraf dist && tsc -p tsconfig.build.json && tsc index.ts -d",
-    "build:dev": "tsc index.ts -d && tsc -w -p tsconfig.build.json",
+    "build:dev": "tsc -w -p tsconfig.build.json && tsc index.ts -d",
     "format:check": "prettier \"lib/**/*.ts\" \"./*.ts\" --check",
     "format": "prettier \"lib/**/*.ts\" \"./*.ts\" --write",
     "prerelease": "npm run build",
     "release": "release-it",
     "prepublish:npm": "npm run build",
     "publish:npm": "npm publish --access public",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:e2e": "jest --config ./tests/jest-e2e.json --runInBand --detectOpenHandles",
+    "test:e2e:dev": "jest --config ./tests/jest-e2e.json --runInBand --watch"
   },
   "repository": {
     "type": "git",
@@ -39,25 +40,31 @@
   "devDependencies": {
     "@nestjs/common": "^7.6.15",
     "@nestjs/core": "^7.6.15",
+    "@nestjs/platform-express": "^7.6.18",
+    "@nestjs/testing": "^7.6.18",
     "@types/amqplib": "^0.5.17",
+    "@types/jest": "^27.0.2",
     "@types/node": "^14.14.44",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "amqplib": "^0.8.0",
+    "axios": "^0.24.0",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "jest": "^27.3.1",
     "prettier": "^2.3.0",
     "reflect-metadata": "^0.1.13",
     "release-it": "^14.6.2",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.7",
+    "ts-jest": "^27.0.7",
     "typescript": "^4.2.4"
   },
   "peerDependencies": {
     "@nestjs/common": "^6.10.11 || ^7.0.0",
     "@nestjs/core": "^6.10.11 || ^7.0.0",
-    "amqp-connection-manager": "^3.7.0",
-    "@types/amqplib": "^0.5.17"
+    "@types/amqplib": "^0.5.17",
+    "amqp-connection-manager": "^3.7.0"
   }
 }
