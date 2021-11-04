@@ -34,7 +34,7 @@ export class AMQPCoreModule implements OnApplicationShutdown {
   }
 
   onApplicationShutdown(): void {
-    const logger = new Logger('AMQPModule', true)
+    const logger = new Logger('AMQPModule')
 
     const closeConnection =
       ({ clients, defaultKey }) =>

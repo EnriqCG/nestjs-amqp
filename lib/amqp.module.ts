@@ -15,7 +15,7 @@ import { Channel } from 'amqplib'
   providers: [AMQPExplorer, AMQPMetadataAccessor],
 })
 export class AMQPModule implements OnModuleInit {
-  private readonly logger = new Logger('AMQPModule', true)
+  private readonly logger = new Logger('AMQPModule')
 
   constructor(private readonly amqpService: AMQPService, private readonly explorer: AMQPExplorer) {}
 
