@@ -14,7 +14,7 @@ export interface AMQPClient {
 export const createClient = (): Provider => ({
   provide: AMQP_CLIENT,
   useFactory: async (options: AMQPModuleOptions): Promise<AMQPClient> => {
-    const logger = new Logger('AMQPModule', true)
+    const logger = new Logger('AMQPModule')
 
     const clients = new Map<string, ClientTuple>()
     const clientOptions = new Map<string, AMQPModuleOptions>()
