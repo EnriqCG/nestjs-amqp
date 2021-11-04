@@ -13,7 +13,7 @@
     "release": "release-it",
     "prepublish:npm": "npm run build",
     "publish:npm": "npm publish --access public",
-    "test:e2e": "jest --config ./tests/jest-e2e.json --runInBand --detectOpenHandles",
+    "test:e2e": "jest --config ./tests/jest-e2e.json --runInBand",
     "test:e2e:dev": "jest --config ./tests/jest-e2e.json --runInBand --watch"
   },
   "repository": {
