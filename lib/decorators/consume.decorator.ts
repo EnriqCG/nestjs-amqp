@@ -1,19 +1,10 @@
 import { SetMetadata } from '@nestjs/common'
-import { Options } from 'amqplib'
 import { AMQP_QUEUE_CONSUMER } from '../amqp.constants'
+import { ConsumerOptions } from '../amqp.interface'
 
-interface ConsumerOptions extends Partial<Options.Consume> {
-  queueName: string
-}
-
-export const Consume = (queueNameOrOptions: string | ConsumerOptions): MethodDecorator => {
+export const Consume = (queueName: string, options?: ConsumerOptions): MethodDecorator => {
   return (target: object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-    const options =
-      typeof queueNameOrOptions === 'string'
-        ? { queueName: queueNameOrOptions }
-        : queueNameOrOptions
-
-    SetMetadata(AMQP_QUEUE_CONSUMER, { ...options, methodName: propertyKey })(
+    SetMetadata(AMQP_QUEUE_CONSUMER, { ...options, queueName, methodName: propertyKey })(
       target,
       propertyKey,
       descriptor,

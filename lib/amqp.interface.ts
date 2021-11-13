@@ -1,7 +1,7 @@
 import { ChannelWrapper, AmqpConnectionManager } from 'amqp-connection-manager'
 import { Options } from 'amqplib'
 
-export interface AMQPModuleOptions extends Partial<Options.Connect> {
+export interface AMQPModuleOptions {
   name?: string
   assertQueues?: boolean
   exchange?: AMQPExchange
@@ -14,12 +14,11 @@ export interface EventMetadata {
   callback: any
 }
 
-export interface AMQPMetadataConfiguration extends Partial<Options.Consume> {
+export interface AMQPHandlerMetadata extends Partial<Options.Consume> {
+  connectionName?: string
   queueName: string
-  target: any
   methodName: string | symbol
-  callback: any
-  prefix: string
+  callback: Function
 }
 
 interface AMQPExchange {
@@ -32,7 +31,6 @@ export interface ControllerMetadata {
   patternPrefix: string
 }
 
-export interface ClientTuple {
-  connection: AmqpConnectionManager
-  channel: ChannelWrapper
+export interface ConsumerOptions extends Partial<Options.Consume> {
+  connectionName?: string
 }

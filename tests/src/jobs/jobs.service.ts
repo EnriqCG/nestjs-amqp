@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common'
-import { AMQPService } from '../../../lib'
+import { Channel } from 'amqplib'
+import { InjectAMQPChannel } from '../../..'
 
 @Injectable()
 export class JobsService {
-  constructor(private amqpService: AMQPService) {}
+  constructor(
+    @InjectAMQPChannel()
+    private amqpChannel: Channel,
+  ) {}
 
   async publishMessage(exchange: string, routingKey: string, message: string): Promise<boolean> {
-    const ch = this.amqpService.getChannel()
-
-    return ch.publish(exchange, routingKey, Buffer.from(message))
+    return this.amqpChannel.publish(exchange, routingKey, Buffer.from(message))
   }
 }
