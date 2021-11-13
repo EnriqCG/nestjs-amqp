@@ -1,6 +1,5 @@
 import { Controller } from '@nestjs/common'
 import { Consume, Consumer } from '../../../lib'
-import { JobsService } from './jobs.service'
 
 @Controller()
 @Consumer()

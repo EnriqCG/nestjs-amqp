@@ -1,4 +1,3 @@
-import { ChannelWrapper, AmqpConnectionManager } from 'amqp-connection-manager'
 import { Options } from 'amqplib'
 
 export interface AMQPModuleOptions {

@@ -9,13 +9,13 @@ import {
 } from '@nestjs/common'
 import { DiscoveryModule, ModuleRef } from '@nestjs/core'
 import { Channel, Options } from 'amqplib'
-import { AMQP_CONNECTION_NAME, AMQP_MODULE_OPTIONS } from './amqp.constants'
-import { AMQPModuleOptions } from './amqp.interface'
-import amqpConnectionManager from 'amqp-connection-manager'
+import amqpConnectionManager, { AmqpConnectionManager } from 'amqp-connection-manager'
+
+import { AMQPExplorer } from './amqp.explorer'
+import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
 import { getAMQPChannelToken, getAMQPConnectionToken } from './amqp.utils'
-import { AMQPExplorer } from '../dist/amqp.explorer'
-import { AMQPMetadataAccessor } from '../dist/amqp-metadata.accessor'
-import { IAmqpConnectionManager } from 'amqp-connection-manager/dist/esm/AmqpConnectionManager'
+import { AMQPModuleOptions } from './amqp.interface'
+import { AMQP_CONNECTION_NAME, AMQP_MODULE_OPTIONS } from './amqp.constants'
 
 @Global()
 @Module({})
@@ -33,7 +33,7 @@ export class AMQPCoreModule implements OnApplicationShutdown {
 
     const AMQPConnectionProvider: Provider = {
       provide: amqpConnectionName,
-      useFactory: (): IAmqpConnectionManager => {
+      useFactory: (): AmqpConnectionManager => {
         const amqpConnection = amqpConnectionManager.connect(connection)
 
         amqpConnection.on('connect', () => {
@@ -50,7 +50,7 @@ export class AMQPCoreModule implements OnApplicationShutdown {
 
     const AMQPChannelProvider: Provider = {
       provide: getAMQPChannelToken(options.name),
-      useFactory: (connection: IAmqpConnectionManager) => {
+      useFactory: (connection: AmqpConnectionManager) => {
         const channel = connection.createChannel()
 
         channel.addSetup((channel: Channel) => {
@@ -92,7 +92,7 @@ export class AMQPCoreModule implements OnApplicationShutdown {
   }
 
   onApplicationShutdown(): void {
-    const connection = this.moduleRef.get<IAmqpConnectionManager>(this.connectionName)
+    const connection = this.moduleRef.get<AmqpConnectionManager>(this.connectionName)
 
     connection.close()
   }

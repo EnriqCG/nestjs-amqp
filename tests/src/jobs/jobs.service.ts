@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Channel } from 'amqplib'
-import { InjectAMQPChannel } from '../../..'
+import { InjectAMQPChannel } from '../../../lib'
 
 @Injectable()
 export class JobsService {

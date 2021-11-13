@@ -1,9 +1,9 @@
 import { DynamicModule, Module } from '@nestjs/common'
+import { isFunction } from '@nestjs/common/utils/shared.utils'
+import { Options } from 'amqplib'
 
 import { AMQPCoreModule } from './amqp-core.module'
 import { AMQPModuleOptions } from './amqp.interface'
-import { isFunction } from '@nestjs/common/utils/shared.utils'
-import { Options } from 'amqplib'
 
 @Module({})
 export class AMQPModule {

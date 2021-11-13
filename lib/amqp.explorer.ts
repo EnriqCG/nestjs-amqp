@@ -2,11 +2,12 @@ import { Inject, Injectable, Logger, OnModuleInit, Options } from '@nestjs/commo
 import { MetadataScanner } from '@nestjs/core/metadata-scanner'
 import { DiscoveryService, ModuleRef } from '@nestjs/core'
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper'
-import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
-import { AMQPHandlerMetadata, AMQPModuleOptions, EventMetadata } from './amqp.interface'
 import { ChannelWrapper } from 'amqp-connection-manager'
-import { AMQP_MODULE_OPTIONS } from './amqp.constants'
+
+import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
 import { getAMQPChannelToken } from './amqp.utils'
+import { AMQPHandlerMetadata, AMQPModuleOptions } from './amqp.interface'
+import { AMQP_MODULE_OPTIONS } from './amqp.constants'
 
 @Injectable()
 export class AMQPExplorer implements OnModuleInit {
