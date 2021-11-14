@@ -50,7 +50,7 @@ export class AMQPCoreModule implements OnApplicationShutdown {
 
     const AMQPChannelProvider: Provider = {
       provide: getAMQPChannelToken(options.name),
-      useFactory: (connection: AmqpConnectionManager) => {
+      useFactory: async (connection: AmqpConnectionManager) => {
         const channel = connection.createChannel()
 
         channel.addSetup((channel: Channel) => {
@@ -61,6 +61,7 @@ export class AMQPCoreModule implements OnApplicationShutdown {
           }
         })
 
+        await channel.waitForConnect()
         return channel
       },
       inject: [amqpConnectionName],
