@@ -14,8 +14,8 @@ export class AMQPExplorer implements OnModuleInit {
   private readonly logger = new Logger('AMQPModule')
 
   constructor(
-    @Inject(AMQP_MODULE_OPTIONS)
-    private readonly amqpModuleOptions: AMQPModuleOptions,
+    /* @Inject(AMQP_MODULE_OPTIONS)
+    private readonly amqpModuleOptions: AMQPModuleOptions, */
     private readonly moduleRef: ModuleRef,
     private readonly metadataScanner: MetadataScanner,
     private readonly discoveryService: DiscoveryService,
@@ -60,7 +60,7 @@ export class AMQPExplorer implements OnModuleInit {
       }, [])
       .filter((handler) => handler.queueName)
 
-    handlers.forEach((handler: AMQPHandlerMetadata) => {
+    /* handlers.forEach((handler: AMQPHandlerMetadata) => {
       const channelToken = getAMQPChannelToken(handler.connectionName)
       const channel = this.getChannel(channelToken)
 
@@ -99,7 +99,7 @@ export class AMQPExplorer implements OnModuleInit {
           handler.queueName
         }`,
       )
-    })
+    }) */
   }
 
   getChannel(connectionToken: string) {

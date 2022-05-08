@@ -1,6 +1,8 @@
+import { ModuleMetadata, Type } from '@nestjs/common'
 import { Options } from 'amqplib'
 
 export interface AMQPModuleOptions {
+  uri?: string
   name?: string
   assertQueues?: boolean
   exchange?: AMQPExchange
@@ -32,4 +34,16 @@ export interface ControllerMetadata {
 
 export interface ConsumerOptions extends Partial<Options.Consume> {
   connectionName?: string
+}
+
+export interface AMQPOptionsFactory {
+  createAMQPOptions(): Promise<AMQPModuleOptions> | AMQPModuleOptions
+}
+
+export interface AMQPModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+  name?: string
+  useExisting?: Type<AMQPOptionsFactory>
+  useClass?: Type<AMQPOptionsFactory>
+  useFactory?: (...args: any[]) => Promise<AMQPModuleOptions> | AMQPModuleOptions
+  inject?: any[]
 }
