@@ -26,17 +26,18 @@ AMQP module for NestJS with decorator support.
 
 This project is still a work-in-progress and is being **actively developed**. Issues and PRs are welcome!
 
-**Please check the [v1.0 milestone](https://github.com/EnriqCG/nestjs-amqp/milestone/1)** for features targeted for the first stable release.
+**Please check the [v2.0 milestone](https://github.com/EnriqCG/nestjs-amqp/milestone/1)** for features targeted for the first stable release.
 
 ---
 
-This module injects a channel from [amqplib](https://github.com/squaremo/amqp.node). Please check the [Channel](https://www.squaremobius.net/amqp.node/channel_api.html) documentation for extra insight on how to publish messages.
+This module injects a channel from [amqp-connection-manager](https://github.com/jwalton/node-amqp-connection-manager). Please check the [Channel](https://www.squaremobius.net/amqp.node/channel_api.html) documentation for extra insight on how to publish messages.
+
+Connections are recovered when the connection with the RabbitMQ broker is lost.
 
 ## Installation
 
 ```bash
-$ npm i --save @enriqcg/nestjs-amqp amqplib
-$ npm i --save-dev @types/amqplib
+$ npm i --save @enriqcg/nestjs-amqp
 ```
 
 ### Getting Started
