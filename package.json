@@ -37,6 +37,10 @@
     "node": ">=10"
   },
   "homepage": "https://github.com/EnriqCG/nestjs-amqp#readme",
+  "dependencies": {
+    "amqplib": "^0.8.0",
+    "amqp-connection-manager": "^4.0.0"
+  },
   "devDependencies": {
     "@nestjs/common": "^8.1.2",
     "@nestjs/core": "^8.1.2",
@@ -63,9 +67,6 @@
   },
   "peerDependencies": {
     "@nestjs/common": "^6.0.0 || ^7.0.0 || ^8.0.0",
-    "@nestjs/core": "^6.0.0 || ^7.0.0 || ^8.0.0",
-    "amqplib": "^0.8.0",
-    "amqp-connection-manager": "^3.7.0",
-    "@types/amqplib": "^0.8.2"
+    "@nestjs/core": "^6.0.0 || ^7.0.0 || ^8.0.0"
   }
 }
