@@ -23,12 +23,12 @@ export interface AMQPModuleOptions extends Partial<Options.Connect> {
   service?: {
     name: string
     exchange: string
-  },
+  }
   /**
    * If wait is true, the module will await for a full connection
    * before proceeding with the rest of NestJS initialization.
    */
-  wait?: boolean;
+  wait?: boolean
 }
 
 export interface AMQPMetadataConfiguration extends Partial<Options.Consume>, ConsumerOptions {

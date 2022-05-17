@@ -11,7 +11,7 @@ export class AMQPExplorer {
     private readonly metadataScanner: MetadataScanner,
     private readonly discoveryService: DiscoveryService,
     private readonly metadataAccessor: AMQPMetadataAccessor,
-  ) { }
+  ) {}
 
   explore(): AMQPMetadataConfiguration[] {
     const controllers: InstanceWrapper[] = this.discoveryService

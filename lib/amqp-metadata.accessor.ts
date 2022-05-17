@@ -6,7 +6,7 @@ import { AMQPMetadataConfiguration, ControllerMetadata } from './amqp.interface'
 
 @Injectable()
 export class AMQPMetadataAccessor {
-  constructor(private readonly reflector: Reflector) { }
+  constructor(private readonly reflector: Reflector) {}
 
   isConsumerComponent(target: Type<any> | Function): boolean {
     if (!target) return false
