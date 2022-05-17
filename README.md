@@ -1,4 +1,4 @@
-# NestJS-AMQP
+# AMQP (RabbitMQ) Client for NestJS
 
 <p align="center">
 
@@ -26,8 +26,6 @@ AMQP module for NestJS with decorator support.
 
 This project is still a work-in-progress and is being **actively developed**. Issues and PRs are welcome!
 
-**Please check the [v2.0 milestone](https://github.com/EnriqCG/nestjs-amqp/milestone/1)** for features targeted for the first stable release.
-
 ---
 
 This module injects a channel from [amqp-connection-manager](https://github.com/jwalton/node-amqp-connection-manager). Please check the [Channel](https://www.squaremobius.net/amqp.node/channel_api.html) documentation for extra insight on how to publish messages.
@@ -40,9 +38,43 @@ Connections are recovered when the connection with the RabbitMQ broker is lost.
 $ npm i --save @enriqcg/nestjs-amqp
 ```
 
-### Getting Started
+## The concept of a Service in @enriqcg/nestjs-amqp
 
-Register the AMQPModule in `app.module.ts`
+This library was built to solve for the use case of wanting to load balance messages published to a 'topic' across multiple replicas of a same service. The way we make that possible is using a **service** definition. We consider a service a collection of replicas that run copies of the same codebase.
+
+Using a service defiition in @enriqcg/nestjs-amqp is totally optional if you don't need to balance messages across replicas.
+
+We can leverage RabbitMQ's exchanges, routing keys and queue bindigs to achieve this goal. Start by defining a service when importing `AMQPModule` by providing a name and an exchange name.
+
+```typescript
+@Module({
+  imports: [
+    AMQPModule.forRoot({
+      hostname: 'rabbitmq',
+      assertQueuesByDefault: true,
+      assertExchanges: [
+        // we are making sure our exchange is ready
+        // this is optional
+        {
+          name: 'example_exchange',
+          type: 'topic',
+        },
+      ],
+      service: {
+        name: 'dd',
+        exchange: 'example_exchange',
+      },
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+The service name is used to register and identify replicas of a same service. You can run multiple services using this library on the same exchange (in fact, that is really powerful as one message can end up in multiple services).
+
+## Getting Started
+
+Register the AMQPModule in `app.module.ts` and pass a configuration object:
 
 ```typescript
 import { Module } from '@nestjs/common'
@@ -51,14 +83,21 @@ import { AMQPModule } from '@enriqcg/nestjs-amqp'
 @Module({
   imports: [
     AMQPModule.forRoot({
-      hostname: 'localhost',
-      // queues we use with @Consume will be created if-need-be
-      assertQueues: true,
-      exchange: {
-        name: 'my_exchange',
-        // exchange will not be asserted (if-need-be)
-        assert: false,
-      },
+      hostname: 'rabbitmq',
+      username: 'guest',
+      password: 'guest',
+      assertQueuesByDefault: true,
+      assertExchanges: [
+        // these exchanges will be asserted on startup
+        {
+          name: 'example_exchange',
+          type: 'topic',
+        },
+        {
+          name: 'fanout_exchange',
+          type: 'fanout',
+        },
+      ],
     }),
   ],
 })
@@ -71,20 +110,26 @@ You can also check documentation on amqplib's [Exchange](https://www.squaremobiu
 
 ## Publisher
 
-You can now inject the AMQPService in your services and use it to push messages into an exchange.
+You can now inject an AMQP Channel in your services and use it to push messages into an exchange or a queue.
 
 ```typescript
 import { Injectable } from '@nestjs/common'
-import { AMQPService } from '@enriqcg/nestjs-amqp'
+import { InjectAMQPChannel } from '@enriqcg/nestjs-amqp'
+import { Channel } from 'amqplib'
 
 @Injectable()
 export class ExampleService {
-  constructor(private readonly amqpService: AMQPService) {}
+  constructor(
+    @InjectAMQPChannel()
+    private readonly amqpChannel: Channel,
+  ) {}
 
-  async sendEvent() {
-    const amqp = this.amqpService.getChannel()
-
-    amqp.publish('exchange_name', 'queue_name', Buffer.from(JSON.stringify({ test: true })))
+  async sendToExchange() {
+    this.amqpChannel.publish(
+      'exchange_name',
+      'routing_key',
+      Buffer.from(JSON.stringify({ test: true })),
+    )
   }
 }
 ```
@@ -114,6 +159,9 @@ export class ExampleController {
   @Consume({
     queueName: 'updated.address',
     noAck: false,
+    // queue will be deleted after all consumers are dropped
+    assertQueue: true,
+    autoDelete: true,
   })
   handleUpdatedAddressEvent(content: string) {
     const payload = JSON.parse(content)
@@ -161,43 +209,44 @@ interface AMQPModuleOptions {
    */
   name?: string
   /**
-   * Applies the provided string as a suffix to asserted queues
-   *
-   * Default value: ''
-   */
-  serviceName?: string
-  /**
-   * Definition for the AMQP exchange to use
-   * If empty, queues will be bound to the default exchange ('')
+   * Service definition. Please see README.md to learn about how services
+   * work in @enriqcg/nestjs-amqp
    *
    * Default value: {}
    */
-  exchange?: {
-    /**
-     * Name of the exchange to bind queues to
-     *
-     * A value is required
-     */
+  service?: {
     name: string
-    /**
-     * Name of the exchange to bind queues to
-     *
-     * A value is only required if the exchange is asserted
-     */
-    type?: 'direct' | 'topic' | 'headers' | 'fanout' | 'match'
-    /**
-     * Assert the exchange
-     *
-     * Default value: false
-     */
-    assert?: boolean
+    exchange: string
   }
   /**
-   * Assert queues defined with the @Consume decorator
+   * Makes sure that the exchanges are created and are of the same
+   * type on application startup.
+   *
+   * Default value: []
+   */
+  assertExchanges?: [
+    {
+      /**
+       * Name of the exchange to bind queues to
+       *
+       * A value is required
+       */
+      name: string
+      /**
+       * Name of the exchange to bind queues to
+       *
+       * A value is only required if the exchange is asserted
+       */
+      type?: 'direct' | 'topic' | 'headers' | 'fanout' | 'match'
+    },
+  ]
+  /**
+   * Assert queues by default using the @Consume decorator
+   * Consumer options defined in @Consume decorator take priority
    *
    * Default value: 'default'
    */
-  assertQueues?: boolean
+  assertQueuesByDefault?: boolean
   /**
    * Username used for authenticating against the server
    *
@@ -222,6 +271,16 @@ interface AMQPModuleOptions {
    * Default value: '/'
    */
   vhost?: string
+  /**
+   * Wait for a full connection to the AMQP server before continuing
+   * with the rest of the NestJS app initialization.
+   *
+   * This prevents HTTP requests and other entry-points from reaching
+   * the server until there is a valid AMQP connection.
+   *
+   * Default value: false
+   */
+  wait?: boolean
 }
 ```
 
