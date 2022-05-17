@@ -11,7 +11,7 @@ export class AMQPExplorer {
     private readonly metadataScanner: MetadataScanner,
     private readonly discoveryService: DiscoveryService,
     private readonly metadataAccessor: AMQPMetadataAccessor,
-  ) {}
+  ) { }
 
   explore(): AMQPMetadataConfiguration[] {
     const controllers: InstanceWrapper[] = this.discoveryService
@@ -45,6 +45,6 @@ export class AMQPExplorer {
       .reduce((prev, curr) => {
         return prev.concat(curr)
       }, [])
-      .filter((handler) => handler.queueName)
+      .filter((handler) => handler.callback)
   }
 }

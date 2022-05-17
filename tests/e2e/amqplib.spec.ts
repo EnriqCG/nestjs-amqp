@@ -29,7 +29,7 @@ describe('@enriqcg/nestjs-amqp', () => {
   let jobsService: JobsService
   let jobsController: JobsController
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     // TODO: test importing AMQPModule directly with importing the 'test' controller
     // figure out imports if needed
     const module: TestingModule = await Test.createTestingModule({
@@ -98,7 +98,7 @@ describe('@enriqcg/nestjs-amqp', () => {
 
   // TODO: Test multiple exchange types?
 
-  afterEach(async () => {
-    await app.close()
+  afterAll(async () => {
+    app.close()
   })
 })
