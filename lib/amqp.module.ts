@@ -186,17 +186,8 @@ export class AMQPModule implements OnApplicationBootstrap, OnApplicationShutdown
       getAMQPConnectionToken(this.moduleOptions.name),
     )
 
-    const subChannel = this.moduleRef.get<AmqpConnectionManager>(
-      getAMQPPubChannelToken(this.moduleOptions.name),
-    )
-    const pubChannel = this.moduleRef.get<AmqpConnectionManager>(
-      getAMQPSubChannelToken(this.moduleOptions.name),
-    )
-
     this.logger.log('Closing RabbitMQ connection.')
 
-    await subChannel.close()
-    await pubChannel.close()
     await connection.close()
   }
 
