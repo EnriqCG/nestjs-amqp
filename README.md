@@ -161,6 +161,7 @@ Check amqplib's reference on [channel.publish()](https://www.squaremobius.net/am
 import { Consume } from '@enriqcg/nestjs-amqp'
 
 @Consumer('user') // event prefix
+@Controller()
 export class ExampleController {
   constructor(private readonly exampleService: ExampleService) {}
 
