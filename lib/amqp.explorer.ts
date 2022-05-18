@@ -45,6 +45,6 @@ export class AMQPExplorer {
       .reduce((prev, curr) => {
         return prev.concat(curr)
       }, [])
-      .filter((handler) => handler.queueName)
+      .filter((handler) => handler.callback)
   }
 }

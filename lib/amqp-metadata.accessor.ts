@@ -30,7 +30,7 @@ export class AMQPMetadataAccessor {
 
     return {
       ...metadata,
-      callback: targetCallback.bind(instance),
+      callback: metadata ? targetCallback.bind(instance) : null,
       queueName:
         metadata && controllerMetadata.patternPrefix
           ? `${controllerMetadata.patternPrefix}.${metadata.queueName}`

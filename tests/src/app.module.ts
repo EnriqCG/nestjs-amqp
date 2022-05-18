@@ -7,14 +7,24 @@ import { JobsModule } from './jobs/jobs.module'
     AMQPModule.forRoot({
       hostname: 'localhost',
       port: 5672,
-      assertQueues: true,
-      exchange: {
-        assert: true,
-        type: 'topic',
-        name: 'test_exchange',
+      assertQueuesByDefault: true,
+      assertExchanges: [
+        {
+          type: 'topic',
+          name: 'test_exchange',
+        },
+        {
+          type: 'fanout',
+          name: 'test2_exchange',
+        },
+      ],
+      service: {
+        exchange: 'test_exchange',
+        name: 'test',
       },
+      wait: true,
     }),
     JobsModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }
