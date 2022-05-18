@@ -1,4 +1,4 @@
-import { ChannelWrapper, AmqpConnectionManager } from 'amqp-connection-manager'
+import { AmqpConnectionManager, ChannelWrapper } from 'amqp-connection-manager'
 import { Options } from 'amqplib'
 
 export interface ConsumerOptions extends Partial<Options.Consume>, Partial<Options.AssertQueue> {

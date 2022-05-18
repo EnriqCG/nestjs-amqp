@@ -7,24 +7,25 @@ import {
   OnApplicationShutdown,
   Provider,
 } from '@nestjs/common'
-import { DiscoveryModule, ModuleRef } from '@nestjs/core'
 import { Logger } from '@nestjs/common/services/logger.service'
-
-import { AMQPModuleOptions } from './amqp.interface'
-import { AMQPExplorer } from './amqp.explorer'
-import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
 import { isFunction } from '@nestjs/common/utils/shared.utils'
-import { Channel } from 'amqplib'
-import {
-  getAMQPPubChannelToken,
-  getAMQPConnectionToken,
-  getAMQPSubChannelToken,
-} from './amqp.utils'
+import { DiscoveryModule, ModuleRef } from '@nestjs/core'
+
 import amqpConnectionManager, {
   AmqpConnectionManager,
   ChannelWrapper,
 } from 'amqp-connection-manager'
+import { Channel } from 'amqplib'
+
+import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
 import { AMQP_MODULE_OPTIONS } from './amqp.constants'
+import { AMQPExplorer } from './amqp.explorer'
+import { AMQPModuleOptions } from './amqp.interface'
+import {
+  getAMQPConnectionToken,
+  getAMQPPubChannelToken,
+  getAMQPSubChannelToken,
+} from './amqp.utils'
 
 @Global()
 @Module({
@@ -38,7 +39,7 @@ export class AMQPModule implements OnApplicationBootstrap, OnApplicationShutdown
     private readonly explorer: AMQPExplorer,
     @Inject(AMQP_MODULE_OPTIONS) private readonly moduleOptions: AMQPModuleOptions,
     private readonly moduleRef: ModuleRef,
-  ) { }
+  ) {}
 
   static forRoot(connectionOptions: AMQPModuleOptions): DynamicModule {
     const logger = new Logger('AMQPModule')

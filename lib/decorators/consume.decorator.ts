@@ -1,4 +1,5 @@
 import { SetMetadata } from '@nestjs/common'
+
 import { AMQP_QUEUE_CONSUMER } from '../amqp.constants'
 import { ConsumerOptions } from '../amqp.interface'
 

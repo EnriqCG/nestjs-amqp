@@ -1,4 +1,5 @@
 import { SetMetadata } from '@nestjs/common'
+
 import { AMQP_CONTROLLER } from '../amqp.constants'
 
 export const Consumer = (patternPrefix?: string): ClassDecorator => {

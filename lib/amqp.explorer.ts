@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { MetadataScanner } from '@nestjs/core/metadata-scanner'
 import { DiscoveryService } from '@nestjs/core'
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper'
-import { AMQPMetadataConfiguration } from './amqp.interface'
+import { MetadataScanner } from '@nestjs/core/metadata-scanner'
+
 import { AMQPMetadataAccessor } from './amqp-metadata.accessor'
+import { AMQPMetadataConfiguration } from './amqp.interface'
 
 @Injectable()
 export class AMQPExplorer {

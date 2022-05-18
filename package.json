@@ -46,6 +46,7 @@
     "@nestjs/core": "^8.4.4",
     "@nestjs/platform-express": "^8.4.4",
     "@nestjs/testing": "^8.4.4",
+    "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "@types/amqplib": "^0.8.2",
     "@types/jest": "^27.5.0",
     "@types/node": "^16.11.33",

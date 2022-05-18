@@ -1,4 +1,5 @@
 import { Logger, Provider } from '@nestjs/common'
+
 import amqpConnectionManager from 'amqp-connection-manager'
 
 import { AMQP_CLIENT, AMQP_MODULE_OPTIONS } from './amqp.constants'

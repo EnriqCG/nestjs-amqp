@@ -1,7 +1,8 @@
 import { Injectable, Type } from '@nestjs/common'
 import { Controller } from '@nestjs/common/interfaces'
 import { Reflector } from '@nestjs/core'
-import { AMQP_QUEUE_CONSUMER, AMQP_CONTROLLER } from './amqp.constants'
+
+import { AMQP_CONTROLLER, AMQP_QUEUE_CONSUMER } from './amqp.constants'
 import { AMQPMetadataConfiguration, ControllerMetadata } from './amqp.interface'
 
 @Injectable()

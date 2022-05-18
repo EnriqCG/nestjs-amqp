@@ -3,5 +3,16 @@
   "singleQuote": true,
   "semi": false,
   "printWidth": 100,
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+  "importOrder": [
+    "^@nestjs/(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderParserPlugins": [
+    "typescript",
+    "decorators-legacy"
+  ]
 }
