@@ -1,4 +1,3 @@
-import { AmqpConnectionManager, ChannelWrapper } from 'amqp-connection-manager'
 import { Options } from 'amqplib'
 
 export interface ConsumerOptions extends Partial<Options.Consume>, Partial<Options.AssertQueue> {
@@ -45,9 +44,4 @@ interface AMQPExchange {
 
 export interface ControllerMetadata {
   patternPrefix: string
-}
-
-export interface ClientTuple {
-  connection: AmqpConnectionManager
-  channel: ChannelWrapper
 }
