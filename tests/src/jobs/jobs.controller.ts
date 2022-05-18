@@ -14,6 +14,15 @@ export class JobsController {
   static IS_NOTIFIED = false
 
   @Consume('notify_queue')
+  testServiceHandler(data: any) {
+    JobsController.IS_NOTIFIED = data
+  }
+
+  @Consume({
+    exchange: 'test2_exchange',
+    assertQueue: true,
+    autoDelete: true,
+  })
   testEventHandler(data: any) {
     JobsController.IS_NOTIFIED = data
   }

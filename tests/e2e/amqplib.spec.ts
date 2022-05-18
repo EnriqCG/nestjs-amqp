@@ -55,7 +55,7 @@ describe('@enriqcg/nestjs-amqp', () => {
     })
   })
 
-  it('should publish and consume a message from a single queue', async () => {
+  it('should publish and consume a message from a single service queue', async () => {
     //expect.assertions(2)
     expect(
       await jobsService.publishMessage('test_exchange', 'notify_queue', 'test-payload!!'),
@@ -64,6 +64,17 @@ describe('@enriqcg/nestjs-amqp', () => {
     await new Promise((r) => setTimeout(r, 1000))
 
     expect(JobsController.IS_NOTIFIED).toBe('test-payload!!')
+  })
+
+  it('should publish and consume a message from a fanout exchange', async () => {
+    //expect.assertions(2)
+    expect(
+      await jobsService.publishMessage('test2_exchange', '', 'fanout worked!!'),
+    ).toBe(true)
+
+    await new Promise((r) => setTimeout(r, 1000))
+
+    expect(JobsController.IS_NOTIFIED).toBe('fanout worked!!')
   })
 
   it('should fail at publishing a message to an exchange that does not exist', async () => {

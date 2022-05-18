@@ -138,9 +138,13 @@ export class AMQPModule implements OnApplicationBootstrap, OnApplicationShutdown
         let queueName = consumer.queueName ?? consumer.pattern ?? ''
         let exchange = consumer.exchange
 
+        // If service definition exists on module config AND consumer exchange is null
+        // or matches service exchange
         if (this.moduleOptions.service) {
-          queueName = `${queueName}-${this.moduleOptions.service.name}`
-          exchange = this.moduleOptions.service.exchange
+          if (!exchange || (exchange && this.moduleOptions.service.exchange === exchange)) {
+            queueName = `${queueName}-${this.moduleOptions.service.name}`
+            exchange = this.moduleOptions.service.exchange
+          }
         } else {
           if (!exchange) {
             this.logger.error(

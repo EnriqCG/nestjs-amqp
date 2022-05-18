@@ -8,15 +8,21 @@ import { JobsModule } from './jobs/jobs.module'
       hostname: 'localhost',
       port: 5672,
       assertQueuesByDefault: true,
-      assertExchanges: [{
-        type: 'topic',
-        name: 'test_exchange',
-      }],
+      assertExchanges: [
+        {
+          type: 'topic',
+          name: 'test_exchange',
+        },
+        {
+          type: 'fanout',
+          name: 'test2_exchange',
+        },
+      ],
       service: {
         exchange: 'test_exchange',
-        name: 'test'
+        name: 'test',
       },
-      wait: true
+      wait: true,
     }),
     JobsModule,
   ],
