@@ -66,6 +66,28 @@ describe('@enriqcg/nestjs-amqp', () => {
     expect(JobsController.IS_NOTIFIED).toBe('test-payload!!')
   })
 
+  it('should publish and consume a message from a single service queue with an alternative syntax', async () => {
+    //expect.assertions(2)
+    expect(
+      await jobsService.publishMessage('test_exchange', 'notify_queue_alt_syntax', 'payload_no_2_hehe'),
+    ).toBe(true)
+
+    await new Promise((r) => setTimeout(r, 1000))
+
+    expect(JobsController.IS_NOTIFIED).toBe('payload_no_2_hehe')
+  })
+
+  it('should publish and consume a message from a fanout exchange', async () => {
+    //expect.assertions(2)
+    expect(
+      await jobsService.publishMessage('test2_exchange', '', 'fanout worked!!'),
+    ).toBe(true)
+
+    await new Promise((r) => setTimeout(r, 1000))
+
+    expect(JobsController.IS_NOTIFIED).toBe('fanout worked!!')
+  })
+
   it('should publish and consume a message from a fanout exchange', async () => {
     //expect.assertions(2)
     expect(

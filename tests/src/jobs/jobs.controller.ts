@@ -19,6 +19,14 @@ export class JobsController {
   }
 
   @Consume({
+    exchange: 'test_exchange',
+    pattern: 'notify_queue_alt_syntax'
+  })
+  testAltSyntaxServiceHandler(data: any) {
+    JobsController.IS_NOTIFIED = data
+  }
+
+  @Consume({
     exchange: 'test2_exchange',
     assertQueue: true,
     autoDelete: true,
