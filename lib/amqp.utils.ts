@@ -1,5 +1,4 @@
 import {
-  DEFAULT_AMQP_CONFIG,
   DEFAULT_AMQP_CONNECTION,
   DEFAULT_AMQP_PUB_CHANNEL,
   DEFAULT_AMQP_SUB_CHANNEL,
@@ -15,8 +14,4 @@ export function getAMQPPubChannelToken(connectionName?: string) {
 
 export function getAMQPSubChannelToken(connectionName?: string) {
   return connectionName ? `${connectionName}-AMQP_SUB_CHANNEL` : DEFAULT_AMQP_SUB_CHANNEL
-}
-
-export function getAMQPOptionsToken(connectionName?: string) {
-  return connectionName ? `${connectionName}-AMQP_CONFIG` : DEFAULT_AMQP_CONFIG
 }
