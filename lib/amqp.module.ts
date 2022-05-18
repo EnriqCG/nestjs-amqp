@@ -5,7 +5,6 @@ import {
   Module,
   OnApplicationBootstrap,
   OnApplicationShutdown,
-  OnModuleDestroy,
   Provider,
 } from '@nestjs/common'
 import { DiscoveryModule, ModuleRef } from '@nestjs/core'
@@ -39,7 +38,7 @@ export class AMQPModule implements OnApplicationBootstrap, OnApplicationShutdown
     private readonly explorer: AMQPExplorer,
     @Inject(AMQP_MODULE_OPTIONS) private readonly moduleOptions: AMQPModuleOptions,
     private readonly moduleRef: ModuleRef,
-  ) {}
+  ) { }
 
   static forRoot(connectionOptions: AMQPModuleOptions): DynamicModule {
     const logger = new Logger('AMQPModule')
