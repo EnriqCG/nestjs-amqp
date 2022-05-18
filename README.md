@@ -36,6 +36,7 @@ Connections are recovered when the connection with the RabbitMQ broker is lost.
 
 ```bash
 $ npm i --save @enriqcg/nestjs-amqp
+$ npm i --save-dev @types/amqplib
 ```
 
 ## The concept of a Service in @enriqcg/nestjs-amqp
@@ -44,7 +45,7 @@ This library was built to solve for the use case of wanting to load balance mess
 
 Using a service defiition in @enriqcg/nestjs-amqp is totally optional if you don't need to balance messages across replicas.
 
-We can leverage RabbitMQ's exchanges, routing keys and queue bindigs to achieve this goal. Start by defining a service when importing `AMQPModule` by providing a name and an exchange name.
+This library leverages RabbitMQ's exchanges, routing keys and queue bindigs to achieve this goal. Start by defining a service when importing `AMQPModule` by providing a name and an exchange name.
 
 ```typescript
 @Module({
@@ -61,7 +62,7 @@ We can leverage RabbitMQ's exchanges, routing keys and queue bindigs to achieve 
         },
       ],
       service: {
-        name: 'dd',
+        name: 'example_service',
         exchange: 'example_exchange',
       },
     }),
@@ -71,6 +72,22 @@ export class AppModule {}
 ```
 
 The service name is used to register and identify replicas of a same service. You can run multiple services using this library on the same exchange (in fact, that is really powerful as one message can end up in multiple services).
+
+Then we can set up our consumer:
+
+```typescript
+@Consumer()
+@Controller()
+export class AppController {
+  @Consume('test.event')
+  async testHandler(body: unknown) {
+    console.log(this.appService.getHello())
+    return true
+  }
+}
+```
+
+The resulting effect of defining the service and using the @Consume decorator in this setup will be the creation of a queue with name `test.event-example_service`. If other replicas of this same code were to be created, they would join as consumers of the same queue, thus balancing the load of `test.event` messages across multiple instances.
 
 ## Getting Started
 
