@@ -38,7 +38,8 @@
   },
   "homepage": "https://github.com/EnriqCG/nestjs-amqp#readme",
   "dependencies": {
-    "amqp-connection-manager": "^4.1.9"
+    "amqp-connection-manager": "^4.1.9",
+    "@types/amqplib": "^0.8.2"
   },
   "devDependencies": {
     "@nestjs/common": "^8.4.7",
