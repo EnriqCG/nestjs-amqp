@@ -1,5 +1,6 @@
 import { INestApplication } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+
 import axios from 'axios'
 
 import { AppModule } from '../src/app.module'
@@ -69,7 +70,11 @@ describe('@enriqcg/nestjs-amqp', () => {
   it('should publish and consume a message from a single service queue with an alternative syntax', async () => {
     //expect.assertions(2)
     expect(
-      await jobsService.publishMessage('test_exchange', 'notify_queue_alt_syntax', 'payload_no_2_hehe'),
+      await jobsService.publishMessage(
+        'test_exchange',
+        'notify_queue_alt_syntax',
+        'payload_no_2_hehe',
+      ),
     ).toBe(true)
 
     await new Promise((r) => setTimeout(r, 1000))
@@ -79,9 +84,7 @@ describe('@enriqcg/nestjs-amqp', () => {
 
   it('should publish and consume a message from a fanout exchange', async () => {
     //expect.assertions(2)
-    expect(
-      await jobsService.publishMessage('test2_exchange', '', 'fanout worked!!'),
-    ).toBe(true)
+    expect(await jobsService.publishMessage('test2_exchange', '', 'fanout worked!!')).toBe(true)
 
     await new Promise((r) => setTimeout(r, 1000))
 
@@ -90,9 +93,7 @@ describe('@enriqcg/nestjs-amqp', () => {
 
   it('should publish and consume a message from a fanout exchange', async () => {
     //expect.assertions(2)
-    expect(
-      await jobsService.publishMessage('test2_exchange', '', 'fanout worked!!'),
-    ).toBe(true)
+    expect(await jobsService.publishMessage('test2_exchange', '', 'fanout worked!!')).toBe(true)
 
     await new Promise((r) => setTimeout(r, 1000))
 
