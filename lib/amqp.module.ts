@@ -97,10 +97,14 @@ export class AMQPModule implements OnApplicationBootstrap, OnApplicationShutdown
       provide: amqpSubChannelName,
       useFactory: (): ChannelWrapper => {
         return amqpConnection.createChannel({
-          setup: (ch: Channel) =>
+          setup: (ch: Channel) => {
             ch.on('error', (e) => {
               logger.error('Channels error:', e)
-            }),
+            })
+            if (connectionOptions.prefetchCount !== undefined) {
+              ch.prefetch(connectionOptions.prefetchCount)
+            }
+          },
         })
       },
     }

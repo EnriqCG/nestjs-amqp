@@ -23,6 +23,7 @@ export interface AMQPModuleOptions extends Partial<Options.Connect> {
     name: string
     exchange: string
   }
+  prefetchCount?: number
   /**
    * If wait is true, the module will await for a full connection
    * before proceeding with the rest of NestJS initialization.
