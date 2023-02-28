@@ -1,6 +1,6 @@
 {
   "name": "@enriqcg/nestjs-amqp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AMQP module for NestJS with decorator support",
   "main": "index.js",
   "scripts": {
