@@ -16,6 +16,7 @@ jobs:
       - run: npm ci
       - run: npm run format:check
       - run: npm run lint
+      - run: npm run build
 
   integration-tests:
     runs-on: ubuntu-latest
