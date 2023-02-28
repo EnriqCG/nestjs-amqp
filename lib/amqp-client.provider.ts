@@ -1,8 +1,8 @@
-import { Logger, Provider } from '@nestjs/common'
-import amqpConnectionManager from 'amqp-connection-manager'
-
 import { AMQP_CLIENT, AMQP_MODULE_OPTIONS } from './amqp.constants'
 import { AMQPModuleOptions, ClientTuple } from './amqp.interface'
+import { Logger, Provider } from '@nestjs/common'
+import amqpConnectionManager from 'amqp-connection-manager'
+import { Channel } from 'amqplib'
 
 export interface AMQPClient {
   defaultKey: string
@@ -35,7 +35,13 @@ export const createClient = (): Provider => ({
       logger.error(`Lost connection to RabbitMQ broker.\n${err.stack}`)
     })
 
-    const channel = connection.createChannel()
+    const channel = connection.createChannel({
+      setup: async (channel: Channel) => {
+        if (options.prefetchCount !== undefined) {
+          await channel.prefetch(options.prefetchCount)
+        }
+      },
+    })
 
     clients.set(defaultKey, {
       channel,

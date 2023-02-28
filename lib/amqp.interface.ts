@@ -6,6 +6,7 @@ export interface AMQPModuleOptions extends Partial<Options.Connect> {
   assertQueues?: boolean
   exchange?: AMQPExchange
   serviceName?: string
+  prefetchCount?: number
 }
 
 export interface EventMetadata {
