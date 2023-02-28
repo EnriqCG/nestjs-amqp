@@ -9,4 +9,3 @@ tsconfig.build.json
 .commitlintrc.json
 .github
 .gitattributes
-.release-it.json
