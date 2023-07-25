@@ -1,7 +1,7 @@
 {
   "name": "@enriqcg/nestjs-amqp",
-  "version": "2.0.3",
-  "description": "AMQP module for NestJS with decorator support",
+  "version": "2.0.4",
+  "description": "AMQP/RabbitMQ module for NestJS with decorator support",
   "main": "index.js",
   "scripts": {
     "lint": "eslint \"lib/**/*.ts\"",
